@@ -31,26 +31,10 @@ scene.add(new THREE.HemisphereLight())
 
 var model = null
 
-var textureDic = {}
-
-new THREE.FBXLoader().load("./resource/shirt/shirt.FBX"
-    , function (object) {
-        model = object
-        model.position.set(0, 0, 0)
-        model.scale.set(1, 1, 1)
-        scene.add(model)
-    }
-)
-
-new THREE.TextureLoader().load("./resource/shirt/sol_body_v001.jpg"
-    , function (texture) { textureDic["texture1"] = texture })
-
-new THREE.TextureLoader().load("./resource/shirt/sol_body_v002.jpg"
-    , function (texture) { textureDic["texture2"] = texture })
-
-var ssaoPass = new THREE.SSAOPass(scene, camera, width, height);
-ssaoPass.kernelRadius = 16;
-composer.addPass(ssaoPass);
+var geometry = new THREE.BoxGeometry(1, 1, 1);
+var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+var cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
 
 animate()
 
