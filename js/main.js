@@ -12,34 +12,20 @@ const glDiv = document.getElementById('canvasDiv')
 Renderer.domElement.id = 'cv'
 glDiv.appendChild(Renderer.domElement)
 
-const camera = new THREE.PerspectiveCamera(
-    60,
-    width / height,
-    .1,
-    10000
-)
-
-camera.position.set(0, 0, 3)
-camera.lookAt(0, 0, -1)
-
 const scene = new THREE.Scene()
 
-scene.add(camera)
+scene.add(TCamera.getInstance().Camera)
 
 scene.add(new THREE.DirectionalLight())
 scene.add(new THREE.HemisphereLight())
 
-var model = null
-
-var geometry = new THREE.BoxGeometry(1, 1, 1);
-var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+var cube = new BaseCube(0x00ff00);
+scene.add(cube.Mesh);
 
 animate()
 
 function animate() {
     requestAnimationFrame(animate)
-    Renderer.render(scene, camera)
+    Renderer.render(scene, TCamera.getInstance().Camera)
     //composer.render()
 }
