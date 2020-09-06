@@ -20,20 +20,15 @@ function initWebGL() {
 
 }
 
-
 function setupRenderer() {
 	Renderer = new THREE.WebGLRenderer();
 
 	const glDiv = document.getElementById('canvasDiv');
 	if (glDiv != null) {
-		//Renderer.domElement.id = 'cv';
         glDiv.appendChild(Renderer.domElement);
         
         Renderer.domElement.width = width;
 		Renderer.domElement.height = height;
-		
-		// document.getElementById('cv').width = width;
-		// document.getElementById('cv').height = height;
 	}
 
 	calcScreenSize();
@@ -69,7 +64,7 @@ window.addEventListener('resize', function () {
     calcScreenSize();
 
 	Renderer.setSize(Screen_width, Screen_height);
-	TCamera.getInstance().setAspect(Screen_width / Screen_height)
+	TCamera.getInstance().updateCamera();
 });
 
 Scene.add(TenettrisGame.Mesh);

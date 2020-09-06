@@ -58,13 +58,15 @@ class Tetromino {
         var moveIndex = [0, -1];
 
         this.move(moveIndex);
+
+        console.log(this.BaseIndex)
     }
 
     move(moveIndex) {
         this.BaseIndex[0] += moveIndex[0];
         this.BaseIndex[1] += moveIndex[1];
 
-        this.setIndex(this.BaseIndex)
+        this.setIndex(moveIndex)
     }
 
     rotate() {

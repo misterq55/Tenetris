@@ -1,19 +1,19 @@
 class Timer {
     static TimeCounter = 0
+    static TimeInterval = 1;
     constructor() {
-        this.timerId = 0;
+        this.TimerId = 0;
     }
 
     time() {
-        Timer.TimeCounter += 1;
+        Timer.TimeCounter += Timer.TimeInterval;
     }
 
     start() {
-        this.timerId = setInterval(this.time, 1000);
-        // this.timerId = setInterval(_.bind(function() {this.time();}, this), 1000);
+        this.TimerId = setInterval(this.time, 1000);
     }
 
     stop() {
-        clearInterval(this.timerId)
+        clearInterval(this.TimerId)
     }
 }

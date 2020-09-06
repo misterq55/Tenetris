@@ -1,7 +1,7 @@
 class Game {
     constructor() {
         this.cuurentTMino = null;
-        this.cuurentTMino = new OMino();
+        this.cuurentTMino = new LMino();
         this.Mesh = new THREE.Group();
         this.Mesh.add(this.cuurentTMino.Mesh)
         this.GameTimer = new Timer();
@@ -12,7 +12,7 @@ class Game {
     }
 
     start() {
-        this.GameTimer.start();
+        // this.GameTimer.start();
     }
 
     update() {
