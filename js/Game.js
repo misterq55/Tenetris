@@ -49,6 +49,13 @@ class Game {
                 this.CurrentTMino.retrive(index)
                 this.PlayField.setTMinoBuffer(this.CurrentTMino.getPreMoveIndex());
                 this.TetrominoIdx++;
+
+                if (this.TetrominoIdx >= this.tetrnominos.length){
+                    this.CurrentTMino = null;
+                    
+                    break;
+                }
+                
                 this.CurrentTMino = this.tetrnominos[this.TetrominoIdx];
                 this.PlayField.setTetromino(this.CurrentTMino);
                 break;
