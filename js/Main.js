@@ -34,7 +34,7 @@ function setupRenderer() {
 	calcScreenSize();
 
 	Renderer.setSize(Screen_width, Screen_height);
-	Renderer.setClearColor(0x808080, 1.0);
+	Renderer.setClearColor(0xffffff, 1.0);
 	Renderer.gammaOutput = true;
 
 	// where to add the WebGlCanvas element
@@ -56,8 +56,8 @@ function calcScreenSize() {
 	Prev_screen_width = Screen_width;
 	Prev_screen_height = Screen_height;
 
-	Screen_width = window.innerWidth;
-	Screen_height = window.innerHeight;
+	Screen_width = window.innerWidth - 20;
+	Screen_height = window.innerHeight - 20;
 }
 
 window.addEventListener('resize', function () {
@@ -69,10 +69,12 @@ window.addEventListener('resize', function () {
 
 Scene.add(TenettrisGame.Mesh);
 
-TenettrisGame.start();
-
 function animate() {
 	TenettrisGame.update();
     requestAnimationFrame(animate)
     Renderer.render(Scene, TCamera.getInstance().Camera)
 }
+
+document.addEventListener('keydown', function(event) {
+	TenettrisGame.setKeyCode(event.keyCode);
+})

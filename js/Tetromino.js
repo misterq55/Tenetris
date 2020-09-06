@@ -23,8 +23,13 @@ class BaseCube {
 }
 
 class Tetromino {
-    constructor () {
-        this.BaseIndex = [0,0]
+    static LeftLimit = 0;
+    static RightLimit = 0;
+    static DownLimit = 0;
+
+    constructor (gameBaseIndex, startIndex) {
+        this.GameBaseIndex = gameBaseIndex;
+        this.BaseIndex = startIndex
         this.Buffer = new Array(4);
         this.Mesh = new THREE.Group();
         this.BaseCubes = new Array(4);
@@ -35,8 +40,18 @@ class Tetromino {
     }
 
     setBaseCubes(color) {
+        this.PreMoveCheckArr = this.IndexArr.slice();
+
         for (var i = 0; i < 4; i++) {
-            var index = [this.BaseIndex[0] + this.IndexArr[i][0], this.BaseIndex[1] + this.IndexArr[i][1]]
+
+            var newX = parseInt(this.BaseIndex[0], 10) + parseInt(this.IndexArr[i][0], 10);
+            var newY = parseInt(this.BaseIndex[1], 10) + parseInt(this.IndexArr[i][1], 10);
+
+            var index = [newX, newY]
+            
+            this.PreMoveCheckArr[i][0] = index[0] - this.GameBaseIndex[0];
+            this.PreMoveCheckArr[i][1] = index[1] - this.GameBaseIndex[1];
+
             var basecube = new BaseCube(color, index)
             this.BaseCubes[i] = basecube
             this.Mesh.add(basecube.Mesh)
@@ -54,19 +69,32 @@ class Tetromino {
         }
     }
 
-    update() {
-        var moveIndex = [0, -1];
+    preMove(moveIndex) {
+        for (var i = 0; i < 4; i++) {
+            this.PreMoveCheckArr[i][0] = parseInt(this.PreMoveCheckArr[i][0], 10) + parseInt(moveIndex[0], 10);
+            this.PreMoveCheckArr[i][1] = parseInt(this.PreMoveCheckArr[i][1], 10) + parseInt(moveIndex[1], 10);
+        }
+    }
 
-        this.move(moveIndex);
-
-        console.log(this.BaseIndex)
+    retrive(moveIndex) {
+        for (var i = 0; i < 4; i++) {
+            this.PreMoveCheckArr[i][0] = parseInt(this.PreMoveCheckArr[i][0], 10) - parseInt(moveIndex[0], 10);
+            this.PreMoveCheckArr[i][1] = parseInt(this.PreMoveCheckArr[i][1], 10) - parseInt(moveIndex[1], 10);
+        }
     }
 
     move(moveIndex) {
-        this.BaseIndex[0] += moveIndex[0];
-        this.BaseIndex[1] += moveIndex[1];
+        var newX = parseInt(this.BaseIndex[0], 10) + parseInt(moveIndex[0], 10);
+        var newY = parseInt(this.BaseIndex[1], 10) + parseInt(moveIndex[1], 10);
+
+        this.BaseIndex[0] = newX;
+        this.BaseIndex[1] = newY;
 
         this.setIndex(moveIndex)
+    }
+
+    getPreMoveIndex() {
+        return this.PreMoveCheckArr;
     }
 
     rotate() {
@@ -75,8 +103,8 @@ class Tetromino {
 }
 
 class TMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(gameBaseIndex, startIndex) {
+        super(gameBaseIndex, startIndex)
         this.IndexArr = [[1,1], [1,2], [2,3], [3,0]]
         
         super.setBaseCubes(0x8b00ff)
@@ -84,8 +112,8 @@ class TMino extends Tetromino {
 }
 
 class ZMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(gameBaseIndex, startIndex) {
+        super(gameBaseIndex, startIndex)
         this.IndexArr = [[1,3], [2,2], [2,3], [3,2]]
         
         super.setBaseCubes(0xff0000)
@@ -93,8 +121,8 @@ class ZMino extends Tetromino {
 }
 
 class SMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(gameBaseIndex, startIndex) {
+        super(gameBaseIndex, startIndex)
         this.IndexArr = [[1,2], [2,2], [2,3], [3,3]]
         
         super.setBaseCubes(0xf00ff00)
@@ -102,8 +130,8 @@ class SMino extends Tetromino {
 }
 
 class IMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(gameBaseIndex, startIndex) {
+        super(gameBaseIndex, startIndex)
         this.IndexArr = [[1,0], [1,1], [1,2], [1,3]]
         
         super.setBaseCubes(0x50bcdf)
@@ -111,8 +139,8 @@ class IMino extends Tetromino {
 }
 
 class OMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(gameBaseIndex, startIndex) {
+        super(gameBaseIndex, startIndex)
         this.IndexArr = [[1,1], [1,2], [2,1], [2,2]]
         
         super.setBaseCubes(0xffff00)
@@ -120,8 +148,8 @@ class OMino extends Tetromino {
 }
 
 class JMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(gameBaseIndex, startIndex) {
+        super(gameBaseIndex, startIndex)
         this.IndexArr = [[1,1], [2,1], [2,2], [2,3]]
         
         super.setBaseCubes(0x0000ff)
@@ -129,8 +157,8 @@ class JMino extends Tetromino {
 }
 
 class LMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(gameBaseIndex, startIndex) {
+        super(gameBaseIndex, startIndex)
         this.IndexArr = [[1,1], [1,2], [1,3], [2,1]]
         
         super.setBaseCubes(0xff7f00)

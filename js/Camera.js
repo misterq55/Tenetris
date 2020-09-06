@@ -2,8 +2,8 @@ class TCamera {
     static Instance = null;
 
     constructor() {
-        this.CamHegith = 50;
-        this.CamWidth = this.CamHegith / height * width;
+        this.CamHegith = 30;
+        this.CamWidth = this.CamHegith / Screen_height * Screen_width;
 
         this.Camera = new THREE.OrthographicCamera(
             this.CamWidth / -2, this.CamWidth / 2, this.CamHegith / 2, this.CamHegith / -2, 1, 1000
@@ -21,7 +21,7 @@ class TCamera {
     }
 
     updateCamera() {
-        this.CamWidth = this.CamHegith / height * width;
+        this.CamWidth = this.CamHegith / Screen_height * Screen_width;
         this.Camera.left = this.CamWidth / -2;
         this.Camera.right = this.CamWidth / 2;
         this.Camera.top = this.CamHegith / 2;
