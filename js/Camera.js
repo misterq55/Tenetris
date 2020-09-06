@@ -10,8 +10,8 @@ class TCamera {
             10000
         )
 
-        this.Camera.position.set(0, 0, -10)
-        this.Camera.lookAt(0, 0, 1)
+        this.Camera.position.set(0, 0, 50)
+        this.Camera.lookAt(0, 0, -1)
     }
 
     static getInstance() {
@@ -19,5 +19,10 @@ class TCamera {
             this.Instance = new TCamera();
 
         return this.Instance;
+    }
+
+    setAspect(aspect) {
+        this.Camera.aspect = aspect;
+        this.Camera.updateProjectionMatrix();
     }
 }
