@@ -5,17 +5,17 @@ class Game {
 
         this.StartIndex = [[this.GameBaseIndex[0] + this.StatIndex[0]], [this.GameBaseIndex[1] + this.StatIndex[1]]]
 
-        // this.tetrnominos = [new IMino(this.GameBaseIndex, this.StartIndex)
-        //     , new TMino(this.GameBaseIndex, this.StartIndex)
-        //     , new LMino(this.GameBaseIndex, this.StartIndex)
-        //     , new SMino(this.GameBaseIndex, this.StartIndex)
-        //     , new OMino(this.GameBaseIndex, this.StartIndex)
-        //     , new ZMino(this.GameBaseIndex, this.StartIndex)
-        //     , new JMino(this.GameBaseIndex, this.StartIndex)];
-
         this.tetrnominos = [new IMino(this.GameBaseIndex, this.StartIndex)
-            , new IMino(this.GameBaseIndex, this.StartIndex)
-            , new OMino(this.GameBaseIndex, this.StartIndex)];
+            , new TMino(this.GameBaseIndex, this.StartIndex)
+            , new LMino(this.GameBaseIndex, this.StartIndex)
+            , new SMino(this.GameBaseIndex, this.StartIndex)
+            , new OMino(this.GameBaseIndex, this.StartIndex)
+            , new ZMino(this.GameBaseIndex, this.StartIndex)
+            , new JMino(this.GameBaseIndex, this.StartIndex)];
+
+        // this.tetrnominos = [new IMino(this.GameBaseIndex, this.StartIndex)
+        //     , new IMino(this.GameBaseIndex, this.StartIndex)
+        //     , new OMino(this.GameBaseIndex, this.StartIndex)];
 
         this.TetrominoIdx = 0;
 
