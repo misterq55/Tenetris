@@ -74,7 +74,7 @@ class Field {
             var x = tminoBuffer[i][0];
             var y = tminoBuffer[i][1];
 
-            this.Buffer[y][x] = 1;
+            this.Buffer[y][x] = this.CurrentTetromino.getTetrominoType();
 
             var baseCube = this.CurrentTetromino.getBaseCubes(i);
             this.BaseCubes[x + y * (this.FieldWidth + 2)] = baseCube;

@@ -31,10 +31,16 @@ class Tetromino {
         this.BaseCubes = new Array(4);
         this.MoveAccumulate = [0, 0];
         this.PrevRotateIndex = [];
+        
+        this.TetrominoType = 0;
 
         for (var i = 0; i < this.Buffer.length; i++) {
             this.Buffer[i] = new Array(4);
         }
+    }
+
+    getTetrominoType() {
+        return this.TetrominoType;
     }
 
     setBaseCubes(color) {
@@ -211,6 +217,7 @@ class TMino extends Tetromino {
         super(gameBaseIndex, startIndex)
         this.IndexArr = [[0, 1], [1, 1], [1, 2], [2, 1]]
 
+        this.TetrominoType = 1;
         super.setBaseCubes(0x8b00ff)
     }
 
@@ -223,6 +230,8 @@ class ZMino extends Tetromino {
     constructor(gameBaseIndex, startIndex) {
         super(gameBaseIndex, startIndex)
         this.IndexArr = [[0, 2], [1, 2], [1, 1], [2, 1]]
+
+        this.TetrominoType = 2;
 
         super.setBaseCubes(0xff0000)
     }
@@ -237,6 +246,8 @@ class SMino extends Tetromino {
         super(gameBaseIndex, startIndex)
         this.IndexArr = [[0, 1], [1, 1], [1, 2], [2, 2]]
 
+        this.TetrominoType = 3;
+
         super.setBaseCubes(0xf00ff00)
     }
 
@@ -249,6 +260,8 @@ class IMino extends Tetromino {
     constructor(gameBaseIndex, startIndex) {
         super(gameBaseIndex, startIndex)
         this.IndexArr = [[0, 2], [1, 2], [2, 2], [3, 2]]
+
+        this.TetrominoType = 4;
 
         super.setBaseCubes(0x50bcdf)
 
@@ -306,6 +319,8 @@ class OMino extends Tetromino {
         super(gameBaseIndex, startIndex)
         this.IndexArr = [[1, 0], [1, 1], [2, 0], [2, 1]]
 
+        this.TetrominoType = 5;
+
         super.setBaseCubes(0xffff00)
     }
 
@@ -319,6 +334,7 @@ class JMino extends Tetromino {
         super(gameBaseIndex, startIndex)
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [0, 2]]
 
+        this.TetrominoType = 6;
         super.setBaseCubes(0x0000ff)
     }
 
@@ -331,6 +347,8 @@ class LMino extends Tetromino {
     constructor(gameBaseIndex, startIndex) {
         super(gameBaseIndex, startIndex)
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [2, 2]]
+
+        this.TetrominoType = 7;
 
         super.setBaseCubes(0xff7f00)
     }
