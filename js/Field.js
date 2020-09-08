@@ -81,10 +81,16 @@ class Field {
         if (this.SInversionSwitch == 0) {
             this.CurrentBufferPointer = this.Buffer;
             this.AnotherBufferPointer = this.ReverseBuffer;
+
+            this.CurrentBaseCubesPointer = this.BaseCubes;
+            this.AnotherBaseCubesPointer = this.ReverseBaseCubes;
         }
         else if (this.SInversionSwitch == 1) {
             this.CurrentBufferPointer = this.ReverseBuffer;
             this.AnotherBufferPointer = this.Buffer;
+
+            this.CurrentBaseCubesPointer = this.ReverseBaseCubes;
+            this.AnotherBaseCubesPointer = this.BaseCubes;
         }
     }
 
@@ -162,7 +168,7 @@ class Field {
                     
                     if (baseCube != null) {
                         this.CurrentBaseCubesPointer[i][j] = null;
-                        this.CurrentBaseCubesPointer[i][this.FieldWidth - j + 1] = null;
+                        this.AnotherBaseCubesPointer[i][this.FieldWidth - j + 1] = null;
 
                         this.CurrentBufferPointer[i][j] = 0;
                         this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
