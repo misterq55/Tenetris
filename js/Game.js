@@ -1,27 +1,24 @@
 class Game {
     constructor() {
-        this.GameBaseIndex = [-5, -9]
-        this.StatIndex = [4, 20]
-
-        this.StartIndex = [[this.GameBaseIndex[0] + this.StatIndex[0]], [this.GameBaseIndex[1] + this.StatIndex[1]]]
-
-        Tetromino.GameBaseIndex = this.GameBaseIndex;
-        Tetromino.StartIndex = this.StartIndex;
+        Tetromino.StartIndex = [4, 20];
 
         this.TMinoPool = new TetrominoPool();
 
         this.TetrominoIdx = 0;
-
-        this.CurrentTMino = this.TMinoPool.popTetromino();
 
         this.PrevTMino = null;
 
         this.Mesh = new THREE.Group();
         this.GameTimer = new Timer();
 
-        this.PlayField = new Field(this.GameBaseIndex);
-        this.PlayField.setTetromino(this.CurrentTMino);
+        this.CurrentTMino = null;
+        this.PlayField = new Field();
+        
+        this.setTetromino(this.TMinoPool.popTetromino());
+
         this.Mesh.add(this.PlayField.Mesh);
+
+        this.SInversionSwitch = 0;
 
         this.DownIndex = [0, -1];
         this.MoveIndex = [0, 0];
@@ -35,6 +32,27 @@ class Game {
 
     start() {
         this.GameTimer.start();
+    }
+
+    setTetromino(tetromino) {
+        if (this.CurrentTMino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = this.CurrentTMino.getBaseCubes(i);
+
+                this.Mesh.remove(baseCube.Mesh);
+            }
+        }
+
+        if (tetromino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = tetromino.getBaseCubes(i);
+
+                this.Mesh.add(baseCube.Mesh);
+            }
+        }
+
+        this.CurrentTMino = tetromino;
+        this.PlayField.setTetromino(this.CurrentTMino);
     }
 
     moveStateCheck(index) {
@@ -60,8 +78,8 @@ class Game {
                     break;
                 }
                 
-                this.CurrentTMino = this.TMinoPool.popTetromino();
-                this.PlayField.setTetromino(this.CurrentTMino);
+                this.setTetromino(this.TMinoPool.popTetromino());
+                
                 break;
         }
     }
@@ -90,6 +108,19 @@ class Game {
             }
         }
 
+    }
+
+    spaceInversion() {
+        this.SInversionSwitch = ! this.SInversionSwitch;
+
+        if (this.SInversionSwitch == 0) {
+            this.PlayField.Mesh.rotation.set(0, 0, 0);
+        }
+        else if (this.SInversionSwitch == 1) {
+            this.PlayField.Mesh.rotation.set(0, Math.PI, 0);
+        }
+        
+        this.PlayField.spaceInversion(this.SInversionSwitch);
     }
 
     setKeyCode(keyCode) {
@@ -137,6 +168,10 @@ class Game {
 
             case KeyManager.getInstance().getKey("Stop"):
                 this.GameTimer.stop();
+                break;
+
+            case KeyManager.getInstance().getKey("SpaceInversion"):
+                this.spaceInversion();
                 break;
         }
     }

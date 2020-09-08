@@ -9,8 +9,8 @@ class TCamera {
             this.CamWidth / -2, this.CamWidth / 2, this.CamHegith / 2, this.CamHegith / -2, 1, 1000
         )
 
-        this.Camera.position.set(0, 0, 10)
-        this.Camera.lookAt(0, 0, -1)
+        this.Camera.position.set(6, 9, 10)
+        this.Camera.lookAt(6, 9, -1)
     }
 
     static getInstance() {

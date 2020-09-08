@@ -23,11 +23,9 @@ class BaseCube {
 }
 
 class Tetromino {
-    static GameBaseIndex = null;
     static StartIndex = null;
 
     constructor() {
-        this.GameBaseIndex = Tetromino.GameBaseIndex;
         this.BaseIndex = Tetromino.StartIndex
         this.Buffer = new Array(4);
         this.Mesh = new THREE.Group();
@@ -58,8 +56,8 @@ class Tetromino {
 
             var index = [newX, newY]
 
-            this.PreMoveIndex[i][0] = index[0] - this.GameBaseIndex[0];
-            this.PreMoveIndex[i][1] = index[1] - this.GameBaseIndex[1];
+            this.PreMoveIndex[i][0] = index[0];
+            this.PreMoveIndex[i][1] = index[1];
 
             var basecube = new BaseCube(color, index)
             this.BaseCubes[i] = basecube
@@ -72,8 +70,8 @@ class Tetromino {
 
     setIndex(index) {
         for (var i = 0; i < 4; i++) {
-            var newX = parseInt(index[i][0], 10) + parseInt(this.GameBaseIndex[0], 10);
-            var newY = parseInt(index[i][1], 10) + parseInt(this.GameBaseIndex[1], 10);
+            var newX = parseInt(index[i][0], 10);
+            var newY = parseInt(index[i][1], 10);
 
             var newIndex = [newX, newY]
 
@@ -83,8 +81,8 @@ class Tetromino {
 
     calculatePreMove() {
         for (var i = 0; i < 4; i++) {
-            this.PreMoveIndex[i][0] = parseInt(this.IndexArr[i][0], 10) + parseInt(this.BaseIndex[0], 10) - this.GameBaseIndex[0] + parseInt(this.MoveAccumulate[0], 10);
-            this.PreMoveIndex[i][1] = parseInt(this.IndexArr[i][1], 10) + parseInt(this.BaseIndex[1], 10) - this.GameBaseIndex[1] + parseInt(this.MoveAccumulate[1], 10);
+            this.PreMoveIndex[i][0] = parseInt(this.IndexArr[i][0], 10) + parseInt(this.BaseIndex[0], 10) + parseInt(this.MoveAccumulate[0], 10);
+            this.PreMoveIndex[i][1] = parseInt(this.IndexArr[i][1], 10) + parseInt(this.BaseIndex[1], 10) + parseInt(this.MoveAccumulate[1], 10);
         }
     }
 
