@@ -1,26 +1,18 @@
 class Game {
     constructor() {
         this.GameBaseIndex = [-5, -9]
-        this.StatIndex = [5, 18]
+        this.StatIndex = [4, 20]
 
         this.StartIndex = [[this.GameBaseIndex[0] + this.StatIndex[0]], [this.GameBaseIndex[1] + this.StatIndex[1]]]
 
-        this.tetrnominos = [new IMino(this.GameBaseIndex, this.StartIndex)
-            , new TMino(this.GameBaseIndex, this.StartIndex)
-            , new LMino(this.GameBaseIndex, this.StartIndex)
-            , new SMino(this.GameBaseIndex, this.StartIndex)
-            , new OMino(this.GameBaseIndex, this.StartIndex)
-            , new ZMino(this.GameBaseIndex, this.StartIndex)
-            , new JMino(this.GameBaseIndex, this.StartIndex)];
+        Tetromino.GameBaseIndex = this.GameBaseIndex;
+        Tetromino.StartIndex = this.StartIndex;
 
-        // this.tetrnominos = [new IMino(this.GameBaseIndex, this.StartIndex)
-        //     , new IMino(this.GameBaseIndex, this.StartIndex)
-        //     , new OMino(this.GameBaseIndex, this.StartIndex)];
+        this.TMinoPool = new TetrominoPool();
 
         this.TetrominoIdx = 0;
 
-        this.CurrentTMino = null;
-        this.CurrentTMino = this.tetrnominos[this.TetrominoIdx];
+        this.CurrentTMino = this.TMinoPool.popTetromino();
 
         this.PrevTMino = null;
 
@@ -33,6 +25,8 @@ class Game {
 
         this.DownIndex = [0, -1];
         this.MoveIndex = [0, 0];
+
+        this.GameTimer.start();
     }
 
     init() {
@@ -40,7 +34,7 @@ class Game {
     }
 
     start() {
-        // this.GameTimer.start();
+        this.GameTimer.start();
     }
 
     moveStateCheck(index) {
@@ -59,15 +53,14 @@ class Game {
             case 2:
                 this.CurrentTMino.retriveMove(index)
                 this.PlayField.setTMinoBuffer(this.CurrentTMino.getPreMoveIndex());
-                this.TetrominoIdx++;
 
-                if (this.TetrominoIdx >= this.tetrnominos.length){
+                if (this.TMinoPool.getSize() <= 0){
                     this.CurrentTMino = null;
                     
                     break;
                 }
                 
-                this.CurrentTMino = this.tetrnominos[this.TetrominoIdx];
+                this.CurrentTMino = this.TMinoPool.popTetromino();
                 this.PlayField.setTetromino(this.CurrentTMino);
                 break;
         }
@@ -125,9 +118,16 @@ class Game {
                 }
                 break;
 
-            case KeyManager.getInstance().getKey("Up"):
+            case KeyManager.getInstance().getKey("TurnLeft"):
                 if (this.CurrentTMino != null) {
                     this.rotateStateCheck(0);
+                }
+                break;
+
+            case KeyManager.getInstance().getKey("TurnRight"):
+            case KeyManager.getInstance().getKey("Up"):
+                if (this.CurrentTMino != null) {
+                    this.rotateStateCheck(1);
                 }
                 break;
 

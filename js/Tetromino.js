@@ -23,9 +23,12 @@ class BaseCube {
 }
 
 class Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        this.GameBaseIndex = gameBaseIndex;
-        this.BaseIndex = startIndex
+    static GameBaseIndex = null;
+    static StartIndex = null;
+
+    constructor() {
+        this.GameBaseIndex = Tetromino.GameBaseIndex;
+        this.BaseIndex = Tetromino.StartIndex
         this.Buffer = new Array(4);
         this.Mesh = new THREE.Group();
         this.BaseCubes = new Array(4);
@@ -213,8 +216,8 @@ class Tetromino {
 }
 
 class TMino extends Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        super(gameBaseIndex, startIndex)
+    constructor() {
+        super()
         this.IndexArr = [[0, 1], [1, 1], [1, 2], [2, 1]]
 
         this.TetrominoType = 1;
@@ -227,8 +230,8 @@ class TMino extends Tetromino {
 }
 
 class ZMino extends Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        super(gameBaseIndex, startIndex)
+    constructor() {
+        super()
         this.IndexArr = [[0, 2], [1, 2], [1, 1], [2, 1]]
 
         this.TetrominoType = 2;
@@ -242,8 +245,8 @@ class ZMino extends Tetromino {
 }
 
 class SMino extends Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        super(gameBaseIndex, startIndex)
+    constructor() {
+        super()
         this.IndexArr = [[0, 1], [1, 1], [1, 2], [2, 2]]
 
         this.TetrominoType = 3;
@@ -257,8 +260,8 @@ class SMino extends Tetromino {
 }
 
 class IMino extends Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        super(gameBaseIndex, startIndex)
+    constructor() {
+        super()
         this.IndexArr = [[0, 2], [1, 2], [2, 2], [3, 2]]
 
         this.TetrominoType = 4;
@@ -315,8 +318,8 @@ class IMino extends Tetromino {
 }
 
 class OMino extends Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        super(gameBaseIndex, startIndex)
+    constructor() {
+        super()
         this.IndexArr = [[1, 0], [1, 1], [2, 0], [2, 1]]
 
         this.TetrominoType = 5;
@@ -330,8 +333,8 @@ class OMino extends Tetromino {
 }
 
 class JMino extends Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        super(gameBaseIndex, startIndex)
+    constructor() {
+        super()
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [0, 2]]
 
         this.TetrominoType = 6;
@@ -344,8 +347,8 @@ class JMino extends Tetromino {
 }
 
 class LMino extends Tetromino {
-    constructor(gameBaseIndex, startIndex) {
-        super(gameBaseIndex, startIndex)
+    constructor() {
+        super()
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [2, 2]]
 
         this.TetrominoType = 7;

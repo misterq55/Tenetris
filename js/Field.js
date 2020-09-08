@@ -105,7 +105,16 @@ class Field {
                     
                     if (baseCube != null) {
                         this.BaseCubes[j + i * (this.FieldWidth + 2)] = null;
+
+                        // var index = baseCube.getIndex();
+
+                        // var x = index[0] - this.BaseIndex[0];
+                        // var y = index[1] - this.BaseIndex[1] + 1;
+
+                        // this.Buffer[y][x] = 0;
+
                         this.Buffer[i][j] = 0;
+
                         this.Mesh.remove(baseCube.Mesh);                    
                     }
                 }
@@ -119,24 +128,32 @@ class Field {
             }
         }
 
-        for (var i = 2; i < this.FieldHeight + 1; i++) {
+        for (var i = 1; i < this.FieldHeight + 1; i++) {
             if (this.DeleteChecker[i] > 0) {
+                var temp = 0;
                 for (var j = 1; j < this.FieldWidth + 1; j++) {
                     var baseCube = this.BaseCubes[j + i * (this.FieldWidth + 2)];
                     
                     if (baseCube != null) {
                         var index = baseCube.getIndex();
+
+                        var py = index[1] - this.BaseIndex[1] + 1;
+
                         index[1] -= this.DeleteChecker[i];
 
-                        var temp = this.DeleteChecker[i];
-                        this.Buffer[i - temp][j] = this.Buffer[i][j];
-                        this.Buffer[i][j] = 0;
+                        var x = index[0] - this.BaseIndex[0];
+                        var y = index[1] - this.BaseIndex[1] + 1;
+
+                        this.Buffer[y][x] = this.Buffer[py][x];
+                        this.Buffer[py][x] = 0;
 
                         baseCube.setIndex(index);
                     }
                 }
-            }
 
+                var temp1 = 0;
+            }
+            
             this.DeleteChecker[i] = 0;
         }
     }
