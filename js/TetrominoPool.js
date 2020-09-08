@@ -1,18 +1,14 @@
 class TetrominoBag {
     constructor() {
-        // this.Bag = [new IMino()
-        //     , new TMino()
-        //     , new LMino()
-        //     , new SMino()
-        //     , new OMino()
-        //     , new ZMino()
-        //     , new JMino()]
+        this.Bag = [new IMino()
+            , new TMino()
+            , new LMino()
+            , new SMino()
+            , new OMino()
+            , new ZMino()
+            , new JMino()]
 
-        //     this.shuffle();
-
-        this.Bag = [new TMino()
-                , new TMino()
-                , new TMino()]
+            this.shuffle();
 
             this.Size = this.Bag.length;
     }

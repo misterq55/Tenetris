@@ -29,7 +29,7 @@ class KeyManager {
         this.setKey("Up", 38);
         this.setKey("Start", 81); 
         this.setKey("Stop", 83);
-        this.setKey("TurnRight", 88);
-        this.setKey("TurnLeft", 90);
+        this.setKey("TurnLeft", 88);
+        this.setKey("TurnRight", 90);
     }
 }

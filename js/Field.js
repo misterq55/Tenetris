@@ -27,13 +27,14 @@ class Field {
 
     init() {
         this.Buffer = new Array(this.FieldHeight + 2);
-        this.BaseCubes = new Array((this.FieldHeight + 2) * (this.FieldWidth + 2));
+        this.BaseCubes = new Array(this.FieldHeight + 2);
 
         this.LineChecker = new Array(this.FieldHeight + 2);
         this.DeleteChecker = new Array(this.FieldHeight + 2);
 
         for (var i = 0; i < this.FieldHeight + 2; i++) {
-            this.Buffer[i] = new Array(this.FieldWidth + 1);
+            this.Buffer[i] = new Array(this.FieldWidth + 2);
+            this.BaseCubes[i] = new Array(this.FieldWidth + 2);
             this.LineChecker[i] = 0;
             this.DeleteChecker[i] = 0;
 
@@ -43,7 +44,7 @@ class Field {
                 if (i == 0 || i == this.FieldHeight + 1 ||
                     j == 0 || j == this.FieldWidth + 1) {
                     var baseCube = new BaseCube(0x808080, [j + this.BaseIndex[0], i + this.BaseIndex[1]]);
-                    this.BaseCubes[j + i * (this.FieldWidth + 2)] = baseCube;
+                    this.BaseCubes[i][j] = baseCube;
                     this.Buffer[i][j] = -1;
                     this.Mesh.add(baseCube.Mesh);
                 }
@@ -71,7 +72,9 @@ class Field {
         return 1;
     }
 
-    setTMinoBuffer(tminoBuffer) {
+    lineDelete() {
+        var tminoBuffer = this.CurrentTetromino.getPreMoveIndex();
+
         for (var i = 0; i < 4; i++) {
             var x = tminoBuffer[i][0];
             var y = tminoBuffer[i][1];
@@ -79,7 +82,12 @@ class Field {
             this.Buffer[y][x] = this.CurrentTetromino.getTetrominoType();
 
             var baseCube = this.CurrentTetromino.getBaseCubes(i);
-            this.BaseCubes[x + y * (this.FieldWidth + 2)] = baseCube;
+
+            var index = baseCube.getIndex();
+            var tx = index[0] - this.BaseIndex[0];
+            var ty = index[1] - this.BaseIndex[1];
+            
+            this.BaseCubes[y][x] = baseCube;
 
             this.LineChecker[y]++;
         }
@@ -101,17 +109,10 @@ class Field {
         for (var i = 1; i < this.FieldHeight + 1; i++) {
             if (this.LineChecker[i] > 0) {
                 for (var j = 1; j < this.FieldWidth + 1; j++) {
-                    var baseCube = this.BaseCubes[j + i * (this.FieldWidth + 2)];
+                    var baseCube = this.BaseCubes[i][j];
                     
                     if (baseCube != null) {
-                        this.BaseCubes[j + i * (this.FieldWidth + 2)] = null;
-
-                        // var index = baseCube.getIndex();
-
-                        // var x = index[0] - this.BaseIndex[0];
-                        // var y = index[1] - this.BaseIndex[1] + 1;
-
-                        // this.Buffer[y][x] = 0;
+                        this.BaseCubes[i][j] = null;
 
                         this.Buffer[i][j] = 0;
 
@@ -130,28 +131,28 @@ class Field {
 
         for (var i = 1; i < this.FieldHeight + 1; i++) {
             if (this.DeleteChecker[i] > 0) {
-                var temp = 0;
                 for (var j = 1; j < this.FieldWidth + 1; j++) {
-                    var baseCube = this.BaseCubes[j + i * (this.FieldWidth + 2)];
+                    var baseCube = this.BaseCubes[i][j];
                     
                     if (baseCube != null) {
                         var index = baseCube.getIndex();
 
-                        var py = index[1] - this.BaseIndex[1] + 1;
+                        var py = index[1] - this.BaseIndex[1];
 
                         index[1] -= this.DeleteChecker[i];
 
                         var x = index[0] - this.BaseIndex[0];
-                        var y = index[1] - this.BaseIndex[1] + 1;
+                        var y = index[1] - this.BaseIndex[1];
 
                         this.Buffer[y][x] = this.Buffer[py][x];
                         this.Buffer[py][x] = 0;
 
+                        this.BaseCubes[y][x] = baseCube;
+                        this.BaseCubes[py][x] = null;
+
                         baseCube.setIndex(index);
                     }
                 }
-
-                var temp1 = 0;
             }
             
             this.DeleteChecker[i] = 0;

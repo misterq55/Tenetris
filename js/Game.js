@@ -52,7 +52,7 @@ class Game {
 
             case 2:
                 this.CurrentTMino.retriveMove(index)
-                this.PlayField.setTMinoBuffer(this.CurrentTMino.getPreMoveIndex());
+                this.PlayField.lineDelete();
 
                 if (this.TMinoPool.getSize() <= 0){
                     this.CurrentTMino = null;
