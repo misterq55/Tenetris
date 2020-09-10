@@ -5,8 +5,16 @@ class BaseCube {
         var geometry = new THREE.BoxGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial({ color: CubeColor });
         this.Mesh = new THREE.Mesh(geometry, material);
-
+        this.SpaceInversion = 0;
         this.setIndex(index)
+    }
+
+    setSpaceInversion(spaceInversion) {
+        this.SpaceInversion = spaceInversion;
+    }
+
+    getSpaceInverstion() {
+        return this.SpaceInversion;
     }
 
     setIndex(index) {

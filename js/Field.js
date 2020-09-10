@@ -67,9 +67,11 @@ class Field {
                     j == 0 || j == this.FieldWidth + 1) {
                     var baseCube = new BaseCube(0x808080, [j, i]);
                     // this.BaseCubes[i][j] = baseCube;
-                    this.Buffer[i][j] = -1;
-                    this.ReverseBuffer[i][j] = -1;
                     this.FieldMesh.add(baseCube.Mesh);
+                    if (i != this.FieldHeight + 1) {
+                        this.Buffer[i][j] = -1;
+                        this.ReverseBuffer[i][j] = -1;
+                    }
                 }
             }
         }
@@ -130,11 +132,24 @@ class Field {
             var tx = index[0];
             var ty = index[1];
             
+            // if (this.SInversionSwitch == 0) {
+            //     this.BaseCubes[y][x] = baseCube;
+            //     this.ReverseBaseCubes[y][this.FieldWidth - x + 1] = baseCube;
+            // }
+            // else if (this.SInversionSwitch == 1) {
+
             if (this.SInversionSwitch == 1) {
+
+                // this.BaseCubes[y][this.FieldWidth - x + 1] = baseCube;
+                // this.ReverseBaseCubes[y][x] = baseCube;
+                
                 index[0] = this.FieldWidth - tx + 1;
                 // x = this.FieldWidth - tx + 1;
                 baseCube.setIndex(index);
             }
+
+            baseCube.setSpaceInversion(this.SInversionSwitch);
+            
 
             this.CurrentBaseCubesPointer[y][x] = baseCube;
             this.AnotherBaseCubesPointer[y][this.FieldWidth - x + 1] = baseCube;
@@ -193,24 +208,6 @@ class Field {
                     var baseCube = this.CurrentBaseCubesPointer[i][j];
                     
                     if (baseCube != null) {
-                        // var index = baseCube.getIndex();
-
-                        // var py = index[1];
-
-                        // index[1] -= this.DeleteChecker[i];
-
-                        // var x = index[0];
-                        // var y = index[1];
-
-                        // this.CurrentBufferPointer[y][x] = this.CurrentBufferPointer[py][x];
-                        // this.CurrentBufferPointer[py][x] = 0;
-
-                        // this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = this.AnotherBufferPointer[py][this.FieldWidth - x + 1];
-                        // this.AnotherBufferPointer[py][this.FieldWidth - x + 1] = 0;
-
-                        // this.BaseCubes[y][x] = baseCube;
-                        // this.BaseCubes[py][x] = null;
-
                         var index = baseCube.getIndex();
                         index[1] -= this.DeleteChecker[i];
 
@@ -219,6 +216,10 @@ class Field {
 
                         this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
                         this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
+
+                        if (this.SInversionSwitch != baseCube.getSpaceInverstion()) {
+                            index[0] = this.FieldWidth = index[0] + 1;
+                        }
 
                         baseCube.setIndex(index);
 
