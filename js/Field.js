@@ -180,6 +180,7 @@ class Field {
                 for (var j = 1; j < this.FieldWidth + 1; j++) {
 
                     var baseCube = this.CurrentBaseCubesPointer[i][j];
+                    // var baseCube = this.BaseCubes[i][j];
                     
                     if (baseCube != null) {
                         this.CurrentBaseCubesPointer[i][j] = null;
@@ -205,7 +206,8 @@ class Field {
             if (this.DeleteChecker[i] > 0) {
                 for (var j = 1; j < this.FieldWidth + 1; j++) {
 
-                    var baseCube = this.CurrentBaseCubesPointer[i][j];
+                    // var baseCube = this.CurrentBaseCubesPointer[i][j];
+                    var baseCube = this.BaseCubes[i][j];
                     
                     if (baseCube != null) {
                         var index = baseCube.getIndex();
@@ -217,9 +219,13 @@ class Field {
                         this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
                         this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
-                        if (this.SInversionSwitch != baseCube.getSpaceInverstion()) {
-                            index[0] = this.FieldWidth = index[0] + 1;
-                        }
+                        // if (this.SInversionSwitch != baseCube.getSpaceInverstion()) {
+                        //     index[0] = this.FieldWidth - index[0] + 1;
+                        // }
+
+                        // if (j != index[0]) {
+                        //     index[0] = j;
+                        // }
 
                         baseCube.setIndex(index);
 
