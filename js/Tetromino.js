@@ -5,16 +5,7 @@ class BaseCube {
         var geometry = new THREE.BoxGeometry(1, 1, 1);
         var material = new THREE.MeshBasicMaterial({ color: CubeColor });
         this.Mesh = new THREE.Mesh(geometry, material);
-        this.SpaceInversion = 0;
         this.setIndex(index)
-    }
-
-    setSpaceInversion(spaceInversion) {
-        this.SpaceInversion = spaceInversion;
-    }
-
-    getSpaceInverstion() {
-        return this.SpaceInversion;
     }
 
     setIndex(index) {
@@ -27,6 +18,12 @@ class BaseCube {
 
     getIndex() {
         return this.Index;
+    }
+
+    setRotation(dir) {
+        if (dir == 1) {
+            this.Mesh.rotation.set(0, Math.PI, 0);
+        }
     }
 }
 

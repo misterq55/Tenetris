@@ -17,6 +17,7 @@ class Game {
         this.setTetromino(this.TMinoPool.popTetromino());
 
         this.Mesh.add(this.PlayField.Mesh);
+        this.Mesh.add(this.PlayField.EdgeMesh);
 
         this.SInversionSwitch = 0;
 
@@ -101,8 +102,11 @@ class Game {
     }
 
     update() {
+        this.PlayField.update();
+
         if (Timer.TimeCounter > 1) {
             Timer.TimeCounter = 0
+            
             if (this.CurrentTMino != null) {
                 this.moveStateCheck(this.DownIndex);
             }
@@ -111,16 +115,26 @@ class Game {
     }
 
     spaceInversion() {
-        this.SInversionSwitch = ! this.SInversionSwitch;
+        switch(this.SInversionSwitch) {
+            case 0:
+                this.SInversionSwitch = 1;
+                break;
 
-        if (this.SInversionSwitch == 0) {
-            this.PlayField.Mesh.rotation.set(0, 0, 0);
+            case 1:
+                this.SInversionSwitch = 0;
+                break;
         }
-        else if (this.SInversionSwitch == 1) {
-            this.PlayField.Mesh.rotation.set(0, Math.PI, 0);
-        }
+
+        this.PlayField.startRotate(this.SInversionSwitch);
+
+        // if (this.SInversionSwitch == 0) {
+        //     this.PlayField.Mesh.rotation.set(0, 0, 0);
+        // }
+        // else if (this.SInversionSwitch == 1) {
+        //     this.PlayField.Mesh.rotation.set(0, Math.PI, 0);
+        // }
         
-        this.PlayField.spaceInversion(this.SInversionSwitch);
+        // this.PlayField.spaceInversion(this.SInversionSwitch);
     }
 
     setKeyCode(keyCode) {
