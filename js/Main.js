@@ -9,15 +9,27 @@ var WebGlCanvas = null;
 var width = window.innerWidth
 var height = window.innerHeight
 
+loadTexture();
+initWebGL();
+
 const TenettrisGame = new Game();
 
-initWebGL();
 animate();
 
 function initWebGL() {
 	setupRenderer();
 	setupScene();
 
+}
+
+function loadTexture() {
+	TextureManager.getInstance().loadTexture("blue");
+	TextureManager.getInstance().loadTexture("green");
+	TextureManager.getInstance().loadTexture("orange");
+	TextureManager.getInstance().loadTexture("purple");
+	TextureManager.getInstance().loadTexture("red");
+	TextureManager.getInstance().loadTexture("sky");
+	TextureManager.getInstance().loadTexture("yellow");
 }
 
 function setupRenderer() {

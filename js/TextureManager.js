@@ -4,21 +4,21 @@ class TextureManager {
     constructor() {
         this.TextureLoader = new THREE.TextureLoader();
         this.TextureDictionary = [];
-        this.BasePath = "../resource/texture/";
+        this.BasePath = "../Tenetris/resource/texture/";
         this.Format = "png";
     }
 
     static getInstance() {
-        if (Instance == null) {
-            Instance = new TextureManager();
+        if (this.Instance == null) {
+            this.Instance = new TextureManager();
         }
 
-        return Instance;
+        return this.Instance;
     }
 
     loadTexture(path) {
         this.TextureLoader.load(this.BasePath + path + "." + this.Format, function(texture) {
-            this.TextureDictionary[path] = texture;
+            TextureManager.getInstance().TextureDictionary[path] = texture;
         });
     }
 }

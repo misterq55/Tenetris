@@ -1,7 +1,5 @@
 class Game {
     constructor() {
-        this.loadTexture();
-
         Tetromino.StartIndex = [4, 20];
 
         this.TMinoPool = new TetrominoPool();
@@ -29,15 +27,7 @@ class Game {
         this.start();
     }
 
-    loadTexture() {
-        TextureManager.getInstance().loadTexture("blue");
-        TextureManager.getInstance().loadTexture("green");
-        TextureManager.getInstance().loadTexture("orange");
-        TextureManager.getInstance().loadTexture("purple");
-        TextureManager.getInstance().loadTexture("red");
-        TextureManager.getInstance().loadTexture("sky");
-        TextureManager.getInstance().loadTexture("yellow");
-    }
+    
 
     init() {
         
