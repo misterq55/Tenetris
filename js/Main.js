@@ -9,7 +9,6 @@ var WebGlCanvas = null;
 var width = window.innerWidth
 var height = window.innerHeight
 
-loadTexture();
 initWebGL();
 
 const TenettrisGame = new Game();
@@ -20,16 +19,6 @@ function initWebGL() {
 	setupRenderer();
 	setupScene();
 
-}
-
-function loadTexture() {
-	TextureManager.getInstance().loadTexture("blue");
-	TextureManager.getInstance().loadTexture("green");
-	TextureManager.getInstance().loadTexture("orange");
-	TextureManager.getInstance().loadTexture("purple");
-	TextureManager.getInstance().loadTexture("red");
-	TextureManager.getInstance().loadTexture("sky");
-	TextureManager.getInstance().loadTexture("yellow");
 }
 
 function setupRenderer() {
@@ -61,15 +50,15 @@ function setupScene() {
 
 function addLight() {
     Scene.add(new THREE.DirectionalLight())
-    Scene.add(new THREE.HemisphereLight())
+    // Scene.add(new THREE.HemisphereLight())
 }
 
 function calcScreenSize() {
 	Prev_screen_width = Screen_width;
 	Prev_screen_height = Screen_height;
 
-	Screen_width = window.innerWidth - 20;
-	Screen_height = window.innerHeight - 20;
+	Screen_width = window.innerWidth - 50;
+	Screen_height = window.innerHeight - 50;
 }
 
 window.addEventListener('resize', function () {

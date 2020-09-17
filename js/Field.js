@@ -32,8 +32,6 @@ class Field {
         this.RotateStatus = 0;
         this.YAngle = 0;
 
-        this.HighestLevel = 0;
-
         this.init();
     }
 
@@ -126,6 +124,30 @@ class Field {
         }
 
         this.Mesh.rotation.set(0, this.YAngle, 0);
+
+        // switch (this.RotateStatus) {
+        //     case 0:
+        //         return;
+
+        //     case 1:
+        //         this.YAngle -= 1;
+        //         break;
+
+        //     case 2:
+        //         this.YAngle += 1;
+        //         break;
+        // }
+
+        // if (this.YAngle <= 0) {
+        //     this.YAngle = 0;
+        //     this.RotateStatus = 0;
+        // }
+        // else if (this.YAngle >= 180) {
+        //     this.YAngle = 180;
+        //     this.RotateStatus = 0;
+        // }
+
+        // this.Mesh.rotation.set(0, this.YAngle / 180.0 * Math.PI, 0);
     }
 
     checkTetromino(preCheckIndex) {
@@ -154,10 +176,6 @@ class Field {
         for (var i = 0; i < 4; i++) {
             var x = tminoBuffer[i][0];
             var y = tminoBuffer[i][1];
-
-            if (y > this.HighestLevel) {
-                this.HighestLevel = y;
-            }
 
             this.CurrentBufferPointer[y][x] = this.CurrentTetromino.getTetrominoType();
             this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = this.CurrentTetromino.getTetrominoType();

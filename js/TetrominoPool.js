@@ -1,16 +1,68 @@
 class TetrominoBag {
     constructor() {
-        this.Bag = [new IMino()
-            , new TMino()
-            , new LMino()
-            , new SMino()
-            , new OMino()
-            , new ZMino()
-            , new JMino()]
+        this.MinoTextureDictionary = ["sky", "purple", "orange", "green", "yellow", "red", "blue"];
+        this.Bag = [];
+        // this.Bag = [new IMino()
+        //     , new TMino()
+        //     , new LMino()
+        //     , new SMino()
+        //     , new OMino()
+        //     , new ZMino()
+        //     , new JMino()]
+
+        let timeInterval = 30;
+
+        for (let i = 0, p = Promise.resolve(); i < this.MinoTextureDictionary.length; i++) {
+            let cubeTextureName = this.MinoTextureDictionary[i];
+            p = p.then(_=> new Promise(
+                resolve =>
+                    setTimeout(function () {
+                        if (TextureManager.getInstance().Dictionary[cubeTextureName] == null) {
+                            TextureManager.getInstance().loadTexture(cubeTextureName, function (textureInstance) {}).then(async function (cubeTexture) {
+                                TextureManager.getInstance().Dictionary[cubeTextureName] = cubeTexture;
+                                this.Bag.push(createTetromino(i, cubeTexture));
+                            })
+                        }
+                        else {
+                            this.Bag.push(createTetromino(i, TextureManager.getInstance().Dictionary[cubeTextureName]));
+                        }
+                    }, Math.random() * timeInterval)
+            ))
+        }        
 
             this.shuffle();
 
             this.Size = this.Bag.length;
+    }
+
+    createTetromino(idx, textureName) {
+        var tetromino = null;
+
+        switch (idx) {
+            case 0:
+                tetromino = new IMino(textureName);
+                break;
+            case 1:
+                tetromino = new TMino(textureName);
+                break;
+            case 2:
+                tetromino = new LMino(textureName);
+                break;
+            case 3:
+                tetromino = new SMino(textureName);
+                break;
+            case 4:
+                tetromino = new OMino(textureName);
+                break;
+            case 5:
+                tetromino = new ZMino(textureName);
+                break;
+            case 6:
+                tetromino = new JMino(textureName);
+                break;
+        }
+
+        return tetromino;
     }
 
     getSize() {

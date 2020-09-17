@@ -1,15 +1,15 @@
 class BaseCube {
-    constructor(cubeColor, index) {
-    // constructor(cubeTexture, index) {
+    // constructor(cubeColor, index) {
+    constructor(cubeTexture, index) {
         this.Position = new THREE.Vector3(0, 0, 0);
 
         var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var material = new THREE.MeshBasicMaterial({ color: cubeColor });
-        this.Mesh = new THREE.Mesh(geometry, material);
+        // var material = new THREE.MeshBasicMaterial({ color: cubeColor });
+        // this.Mesh = new THREE.Mesh(geometry, material);
 
-        // var tex = new THREE.MeshLambertMaterial({map: cubeTexture});
+        var tex = new THREE.MeshLambertMaterial({map: cubeTexture});
 
-        // this.Mesh = new THREE.Mesh(geometry, tex);
+        this.Mesh = new THREE.Mesh(geometry, tex);
         this.setIndex(index)
     }
 
@@ -35,7 +35,7 @@ class BaseCube {
 class Tetromino {
     static StartIndex = null;
 
-    constructor() {
+    constructor(cubeTexture) {
         this.BaseIndex = Tetromino.StartIndex
         this.Buffer = new Array(4);
         this.Mesh = new THREE.Group();
@@ -45,7 +45,7 @@ class Tetromino {
         
         this.TetrominoType = 0;
 
-        this.TextureName = null;
+        this.CubeTexture = cubeTexture;
 
         for (var i = 0; i < this.Buffer.length; i++) {
             this.Buffer[i] = new Array(4);
@@ -56,15 +56,9 @@ class Tetromino {
         return this.TetrominoType;
     }
 
-    // setBaseCubes(cubeTextureName) {
-    setBaseCubes(color) {
+    setBaseCubes() {
+    // setBaseCubes(color) {
         this.PreMoveIndex = new Array(4);
-
-        // var cubeTexture = TextureManager.getInstance().TextureDictionary[cubeTextureName];
-        
-        // if (cubeTexture == null) {
-        //     return;
-        // }
 
         for (var i = 0; i < 4; i++) {
 
@@ -78,8 +72,8 @@ class Tetromino {
             this.PreMoveIndex[i][0] = index[0];
             this.PreMoveIndex[i][1] = index[1];
 
-            // var basecube = new BaseCube(cubeTexture, index)
-            var basecube = new BaseCube(color, index)
+            var basecube = new BaseCube(this.CubeTexture, index)
+            // var basecube = new BaseCube(color, index)
             this.BaseCubes[i] = basecube
         }
     }
@@ -234,13 +228,13 @@ class Tetromino {
 }
 
 class TMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(cubeTexture) {
+        super(cubeTexture)
         this.IndexArr = [[0, 1], [1, 1], [1, 2], [2, 1]]
 
         this.TetrominoType = 1;
-        super.setBaseCubes(0x8b00ff)
-        // super.setBaseCubes("purple");
+        // super.setBaseCubes(0x8b00ff)
+        super.setBaseCubes();
     }
 
     rotate(dir) {
@@ -249,14 +243,14 @@ class TMino extends Tetromino {
 }
 
 class ZMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(cubeTexture) {
+        super(cubeTexture)
         this.IndexArr = [[0, 2], [1, 2], [1, 1], [2, 1]]
 
         this.TetrominoType = 2;
 
-        super.setBaseCubes(0xff0000)
-        // super.setBaseCubes("red");
+        // super.setBaseCubes(0xff0000)
+        super.setBaseCubes();
     }
 
     rotate(dir) {
@@ -265,14 +259,14 @@ class ZMino extends Tetromino {
 }
 
 class SMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(cubeTexture) {
+        super(cubeTexture)
         this.IndexArr = [[0, 1], [1, 1], [1, 2], [2, 2]]
 
         this.TetrominoType = 3;
 
-        super.setBaseCubes(0xf00ff00)
-        // super.setBaseCubes("green");
+        // super.setBaseCubes(0xf00ff00)
+        super.setBaseCubes();
     }
 
     rotate(dir) {
@@ -281,14 +275,14 @@ class SMino extends Tetromino {
 }
 
 class IMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(cubeTexture) {
+        super(cubeTexture)
         this.IndexArr = [[0, 2], [1, 2], [2, 2], [3, 2]]
 
         this.TetrominoType = 4;
 
-        super.setBaseCubes(0x50bcdf)
-        // super.setBaseCubes("sky");
+        // super.setBaseCubes(0x50bcdf)
+        super.setBaseCubes();
 
         this.IMinoStatus = 0;
         this.PrevIMinoStatus = 0;
@@ -340,14 +334,14 @@ class IMino extends Tetromino {
 }
 
 class OMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(cubeTexture) {
+        super(cubeTexture)
         this.IndexArr = [[1, 0], [1, 1], [2, 0], [2, 1]]
 
         this.TetrominoType = 5;
 
-        super.setBaseCubes(0xffff00)
-        // super.setBaseCubes("yellow");
+        // super.setBaseCubes(0xffff00)
+        ssuper.setBaseCubes();
     }
 
     rotate(dir) {
@@ -356,14 +350,14 @@ class OMino extends Tetromino {
 }
 
 class JMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(cubeTextureName) {
+        super(cubeTextureName)
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [0, 2]]
 
         this.TetrominoType = 6;
-        super.setBaseCubes(0x0000ff)
+        // super.setBaseCubes(0x0000ff)
 
-        // super.setBaseCubes("blue");
+        super.setBaseCubes(cubeTextureName);
     }
 
     rotate(dir) {
@@ -372,15 +366,15 @@ class JMino extends Tetromino {
 }
 
 class LMino extends Tetromino {
-    constructor() {
-        super()
+    constructor(cubeTextureName) {
+        super(cubeTextureName)
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [2, 2]]
 
         this.TetrominoType = 7;
 
-        super.setBaseCubes(0xff7f00)
+        // super.setBaseCubes(0xff7f00)
 
-        // super.setBaseCubes("orange");
+        super.setBaseCubes(cubeTextureName);
     }
 
     rotate(dir) {
