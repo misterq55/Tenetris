@@ -51,6 +51,8 @@ class Field {
         this.LineChecker = new Array(this.FieldHeight + 2);
         this.DeleteChecker = new Array(this.FieldHeight + 2);
 
+        let texture = OptionManager.getInstance().MinoTextureDictionary["grey"];
+
         for (var i = 0; i < this.FieldHeight + 2; i++) {
             this.Buffer[i] = new Array(this.FieldWidth + 2);
             this.ReverseBuffer[i] = new Array(this.FieldWidth + 2);
@@ -64,7 +66,8 @@ class Field {
 
                 if (i == 0 || i == this.FieldHeight + 1 ||
                     j == 0 || j == this.FieldWidth + 1) {
-                    var baseCube = new BaseCube(0x808080, [j, i]);
+                    
+                    var baseCube = new BaseCube(texture, [j, i]);
                     
                     this.EdgeMesh.add(baseCube.Mesh);
                     if (i != this.FieldHeight + 1) {

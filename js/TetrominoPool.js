@@ -1,6 +1,6 @@
 class TetrominoBag {
     constructor() {
-        this.MinoTextureDictionary = ["sky", "purple", "orange", "green", "yellow", "red", "blue"];
+        // this.MinoTextureDictionary = ["sky", "purple", "orange", "green", "yellow", "red", "blue"];
         this.Bag = [];
         // this.Bag = [new IMino()
         //     , new TMino()
@@ -10,55 +10,60 @@ class TetrominoBag {
         //     , new ZMino()
         //     , new JMino()]
 
-        let timeInterval = 30;
+        // let timeInterval = 30;
 
-        for (let i = 0, p = Promise.resolve(); i < this.MinoTextureDictionary.length; i++) {
-            let cubeTextureName = this.MinoTextureDictionary[i];
-            p = p.then(_=> new Promise(
-                resolve =>
-                    setTimeout(function () {
-                        if (TextureManager.getInstance().Dictionary[cubeTextureName] == null) {
-                            TextureManager.getInstance().loadTexture(cubeTextureName, function (textureInstance) {}).then(async function (cubeTexture) {
-                                TextureManager.getInstance().Dictionary[cubeTextureName] = cubeTexture;
-                                this.Bag.push(createTetromino(i, cubeTexture));
-                            })
-                        }
-                        else {
-                            this.Bag.push(createTetromino(i, TextureManager.getInstance().Dictionary[cubeTextureName]));
-                        }
-                    }, Math.random() * timeInterval)
-            ))
-        }        
+        // for (let i = 0, p = Promise.resolve(); i < this.MinoTextureDictionary.length; i++) {
+        //     let cubeTextureName = this.MinoTextureDictionary[i];
+        //     p = p.then(_=> new Promise(
+        //         resolve =>
+        //             setTimeout(function () {
+        //                 if (TextureManager.getInstance().Dictionary[cubeTextureName] == null) {
+        //                     TextureManager.getInstance().loadTexture(cubeTextureName, function (textureInstance) {}).then(async function (cubeTexture) {
+        //                         TextureManager.getInstance().Dictionary[cubeTextureName] = cubeTexture;
+        //                         this.Bag.push(createTetromino(i, cubeTexture));
+        //                     })
+        //                 }
+        //                 else {
+        //                     this.Bag.push(createTetromino(i, TextureManager.getInstance().Dictionary[cubeTextureName]));
+        //                 }
+        //             }, Math.random() * timeInterval)
+        //     ))
+        // }        
 
-            this.shuffle();
+        for (var i = 0; i < 7; i++) {
+            var cubeTextureName = OptionManager.getInstance().MinoTextureDictionary[i];
+            this.Bag.push(this.createTetromino(i, TextureManager.getInstance().Dictionary[cubeTextureName]));
+        }
 
-            this.Size = this.Bag.length;
+        this.shuffle();
+
+        this.Size = this.Bag.length;
     }
 
-    createTetromino(idx, textureName) {
+    createTetromino(idx, texture) {
         var tetromino = null;
 
         switch (idx) {
             case 0:
-                tetromino = new IMino(textureName);
+                tetromino = new IMino(texture);
                 break;
             case 1:
-                tetromino = new TMino(textureName);
+                tetromino = new TMino(texture);
                 break;
             case 2:
-                tetromino = new LMino(textureName);
+                tetromino = new LMino(texture);
                 break;
             case 3:
-                tetromino = new SMino(textureName);
+                tetromino = new SMino(texture);
                 break;
             case 4:
-                tetromino = new OMino(textureName);
+                tetromino = new OMino(texture);
                 break;
             case 5:
-                tetromino = new ZMino(textureName);
+                tetromino = new ZMino(texture);
                 break;
             case 6:
-                tetromino = new JMino(textureName);
+                tetromino = new JMino(texture);
                 break;
         }
 

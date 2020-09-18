@@ -341,7 +341,7 @@ class OMino extends Tetromino {
         this.TetrominoType = 5;
 
         // super.setBaseCubes(0xffff00)
-        ssuper.setBaseCubes();
+        super.setBaseCubes();
     }
 
     rotate(dir) {

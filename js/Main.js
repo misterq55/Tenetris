@@ -9,11 +9,43 @@ var WebGlCanvas = null;
 var width = window.innerWidth
 var height = window.innerHeight
 
+TenettrisGame = null;
+loadTexture();
+
 initWebGL();
 
-const TenettrisGame = new Game();
-
 animate();
+
+function loadTexture() {
+	let timeInterval = 30;
+	let p = Promise.resolve();
+	
+	for (let i = 0; i < OptionManager.getInstance().MinoTextureDictionary.length; i++) {
+		let cubeTextureName = OptionManager.getInstance().MinoTextureDictionary[i];
+		p = p.then(_ => new Promise(
+			resolve =>
+				setTimeout(function () {
+					if (TextureManager.getInstance().Dictionary[cubeTextureName] == null) {
+						TextureManager.getInstance().loadTexture(cubeTextureName, function (textureInstance) { }).then(async function (cubeTexture) {
+							TextureManager.getInstance().Dictionary[cubeTextureName] = cubeTexture;
+						})
+					}
+
+					resolve();
+				}, Math.random() * timeInterval)
+		))
+	}
+
+	p.then(_ => new Promise(
+		resolve =>
+		setTimeout(function () {
+			TenettrisGame = new Game();
+			Scene.add(TenettrisGame.Mesh);
+			
+			resolve();
+		}, Math.random() * timeInterval)
+	))
+}
 
 function initWebGL() {
 	setupRenderer();
@@ -26,9 +58,9 @@ function setupRenderer() {
 
 	const glDiv = document.getElementById('canvasDiv');
 	if (glDiv != null) {
-        glDiv.appendChild(Renderer.domElement);
-        
-        Renderer.domElement.width = width;
+		glDiv.appendChild(Renderer.domElement);
+
+		Renderer.domElement.width = width;
 		Renderer.domElement.height = height;
 	}
 
@@ -49,8 +81,15 @@ function setupScene() {
 }
 
 function addLight() {
-    Scene.add(new THREE.DirectionalLight())
-    // Scene.add(new THREE.HemisphereLight())
+	// var light = new THREE.DirectionalLight(0xffffff, 0.5);
+	// light.position.set(0, 1, 0);
+	// Scene.add(light);
+	// Scene.add(light.target);
+
+	// Scene.add(new THREE.DirectionalLight(0xffffff, 0.5));
+	// Scene.add(new THREE.HemisphereLight());
+
+	Scene.add(new THREE.AmbientLight(0x404040));
 }
 
 function calcScreenSize() {
@@ -62,20 +101,21 @@ function calcScreenSize() {
 }
 
 window.addEventListener('resize', function () {
-    calcScreenSize();
+	calcScreenSize();
 
 	Renderer.setSize(Screen_width, Screen_height);
 	TCamera.getInstance().updateCamera();
 });
 
-Scene.add(TenettrisGame.Mesh);
-
 function animate() {
-	TenettrisGame.update();
-    requestAnimationFrame(animate)
-    Renderer.render(Scene, TCamera.getInstance().Camera)
+	if (TenettrisGame) {
+		TenettrisGame.update();
+	}
+
+	requestAnimationFrame(animate)
+	Renderer.render(Scene, TCamera.getInstance().Camera)
 }
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
 	TenettrisGame.setKeyCode(event.keyCode);
 })
