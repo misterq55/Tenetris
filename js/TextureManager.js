@@ -20,10 +20,5 @@ class TextureManager {
         return new Promise(resolve => {
             new THREE.TextureLoader().load(this.BasePath + path + "." + this.Format, resolve);
         })
-
-        // this.TextureLoader.load(this.BasePath + path + "." + this.Format, function(texture) {
-        //     TextureManager.getInstance().TextureDictionary[path] = texture;
-        //     callBack(texture);
-        // });
     }
 }

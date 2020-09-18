@@ -32,6 +32,8 @@ class Field {
         this.RotateStatus = 0;
         this.YAngle = 0;
 
+        this.HeightBuffer = new Array(this.FieldWidth + 2);
+
         this.init();
     }
 
@@ -51,7 +53,7 @@ class Field {
         this.LineChecker = new Array(this.FieldHeight + 2);
         this.DeleteChecker = new Array(this.FieldHeight + 2);
 
-        let texture = OptionManager.getInstance().MinoTextureDictionary["grey"];
+        let texture = TextureManager.getInstance().Dictionary["grey"];
 
         for (var i = 0; i < this.FieldHeight + 2; i++) {
             this.Buffer[i] = new Array(this.FieldWidth + 2);
@@ -59,6 +61,8 @@ class Field {
             this.BaseCubes[i] = new Array(this.FieldWidth + 2);
             this.LineChecker[i] = 0;
             this.DeleteChecker[i] = 0;
+
+            this.HeightBuffer[i] = 0;
 
             for (var j = 0; j < this.FieldWidth + 2; j++) {
                 this.Buffer[i][j] = 0;
@@ -127,33 +131,9 @@ class Field {
         }
 
         this.Mesh.rotation.set(0, this.YAngle, 0);
-
-        // switch (this.RotateStatus) {
-        //     case 0:
-        //         return;
-
-        //     case 1:
-        //         this.YAngle -= 1;
-        //         break;
-
-        //     case 2:
-        //         this.YAngle += 1;
-        //         break;
-        // }
-
-        // if (this.YAngle <= 0) {
-        //     this.YAngle = 0;
-        //     this.RotateStatus = 0;
-        // }
-        // else if (this.YAngle >= 180) {
-        //     this.YAngle = 180;
-        //     this.RotateStatus = 0;
-        // }
-
-        // this.Mesh.rotation.set(0, this.YAngle / 180.0 * Math.PI, 0);
     }
 
-    checkTetromino(preCheckIndex) {
+    checkTetromino(preCheckIndex, moveIndex) {
         for (var i = 0; i < 4; i++) {
             var x = preCheckIndex[i][0];
             var y = preCheckIndex[i][1];
@@ -166,7 +146,11 @@ class Field {
                 return -1;
             }
             else if (this.CurrentBufferPointer[y][x] > 0) {
-                return 2;
+                if (moveIndex[1] == -1) {
+                    return 2;
+                }
+
+                return -1;
             }
         }
 

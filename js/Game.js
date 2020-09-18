@@ -61,7 +61,7 @@ class Game {
     moveStateCheck(index) {
         this.CurrentTMino.move(index)
 
-        var state = this.PlayField.checkTetromino(this.CurrentTMino.getPreMoveIndex());
+        var state = this.PlayField.checkTetromino(this.CurrentTMino.getPreMoveIndex(), this.MoveIndex);
         switch (state) {
             case 1:
                 this.CurrentTMino.applyIndex();
@@ -90,7 +90,7 @@ class Game {
     rotateStateCheck(dir) {
         this.CurrentTMino.rotate(dir)
 
-        var state = this.PlayField.checkTetromino(this.CurrentTMino.getPreMoveIndex());
+        var state = this.PlayField.checkTetromino(this.CurrentTMino.getPreMoveIndex(), [0, 0]);
         switch (state) {
             case 1:
                 this.CurrentTMino.applyIndex();
@@ -128,15 +128,6 @@ class Game {
         }
 
         this.PlayField.startRotate(this.SInversionSwitch);
-
-        // if (this.SInversionSwitch == 0) {
-        //     this.PlayField.Mesh.rotation.set(0, 0, 0);
-        // }
-        // else if (this.SInversionSwitch == 1) {
-        //     this.PlayField.Mesh.rotation.set(0, Math.PI, 0);
-        // }
-        
-        // this.PlayField.spaceInversion(this.SInversionSwitch);
     }
 
     setKeyCode(keyCode) {

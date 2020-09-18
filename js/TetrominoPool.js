@@ -1,34 +1,6 @@
 class TetrominoBag {
     constructor() {
-        // this.MinoTextureDictionary = ["sky", "purple", "orange", "green", "yellow", "red", "blue"];
-        this.Bag = [];
-        // this.Bag = [new IMino()
-        //     , new TMino()
-        //     , new LMino()
-        //     , new SMino()
-        //     , new OMino()
-        //     , new ZMino()
-        //     , new JMino()]
-
-        // let timeInterval = 30;
-
-        // for (let i = 0, p = Promise.resolve(); i < this.MinoTextureDictionary.length; i++) {
-        //     let cubeTextureName = this.MinoTextureDictionary[i];
-        //     p = p.then(_=> new Promise(
-        //         resolve =>
-        //             setTimeout(function () {
-        //                 if (TextureManager.getInstance().Dictionary[cubeTextureName] == null) {
-        //                     TextureManager.getInstance().loadTexture(cubeTextureName, function (textureInstance) {}).then(async function (cubeTexture) {
-        //                         TextureManager.getInstance().Dictionary[cubeTextureName] = cubeTexture;
-        //                         this.Bag.push(createTetromino(i, cubeTexture));
-        //                     })
-        //                 }
-        //                 else {
-        //                     this.Bag.push(createTetromino(i, TextureManager.getInstance().Dictionary[cubeTextureName]));
-        //                 }
-        //             }, Math.random() * timeInterval)
-        //     ))
-        // }        
+        this.Bag = [];   
 
         for (var i = 0; i < 7; i++) {
             var cubeTextureName = OptionManager.getInstance().MinoTextureDictionary[i];

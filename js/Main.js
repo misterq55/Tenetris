@@ -68,9 +68,7 @@ function setupRenderer() {
 
 	Renderer.setSize(Screen_width, Screen_height);
 	Renderer.setClearColor(0xffffff, 1.0);
-	Renderer.gammaOutput = true;
-
-	// where to add the WebGlCanvas element
+	// Renderer.gammaOutput = true;
 }
 
 function setupScene() {
@@ -81,15 +79,7 @@ function setupScene() {
 }
 
 function addLight() {
-	// var light = new THREE.DirectionalLight(0xffffff, 0.5);
-	// light.position.set(0, 1, 0);
-	// Scene.add(light);
-	// Scene.add(light.target);
-
-	// Scene.add(new THREE.DirectionalLight(0xffffff, 0.5));
-	// Scene.add(new THREE.HemisphereLight());
-
-	Scene.add(new THREE.AmbientLight(0x404040));
+	Scene.add(new THREE.AmbientLight(0xffffff, 1.0));
 }
 
 function calcScreenSize() {
