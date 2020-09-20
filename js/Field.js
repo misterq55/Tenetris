@@ -146,7 +146,7 @@ class Field {
                 return -1;
             }
             else if (this.CurrentBufferPointer[y][x] > 0) {
-                if (moveIndex[1] == -1) {
+                if (moveIndex[0] != 0) {
                     return 2;
                 }
 
