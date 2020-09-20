@@ -32,5 +32,6 @@ class KeyManager {
         this.setKey("TurnLeft", 88);
         this.setKey("TurnRight", 90);
         this.setKey("SpaceInversion", 17);
+        this.setKey("TimeInversion", 16);
     }
 }

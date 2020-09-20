@@ -44,6 +44,10 @@ class Tetromino {
 
         this.CubeTexture = cubeTexture;
 
+        this.MoveIndexArray = [];
+
+        this.StartIndex = new Array(4);
+
         for (var i = 0; i < this.Buffer.length; i++) {
             this.Buffer[i] = new Array(4);
         }
@@ -67,6 +71,8 @@ class Tetromino {
 
             this.PreMoveIndex[i][0] = index[0];
             this.PreMoveIndex[i][1] = index[1];
+
+            this.StartIndex[i] = [newX, newY];
 
             var basecube = new BaseCube(this.CubeTexture, index)
             this.BaseCubes[i] = basecube
@@ -218,7 +224,28 @@ class Tetromino {
     }
 
     applyIndex() {
+        var moveIndex = new Array(4);
+        
+        for (var i = 0; i < 4; i++) {
+            moveIndex[i] = [this.PreMoveIndex[i][0], this.PreMoveIndex[i][1]];
+        }
+
+        this.MoveIndexArray.push(Array.from(moveIndex));
         this.setIndex(this.PreMoveIndex)
+    }
+
+    inverseTetromino() {
+        if (this.MoveIndexArray.length <= 0) {
+            this.MoveAccumulate[0] = this.MoveAccumulate[1] = 0;
+            
+            return 1;
+        }
+
+        var moveIndex = this.MoveIndexArray[this.MoveIndexArray.length - 1];
+        this.MoveIndexArray.pop();
+        this.setIndex(moveIndex);
+
+        return 0;
     }
 }
 

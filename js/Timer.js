@@ -1,17 +1,25 @@
 class Timer {
-    static TimeCounter = 0
-    static TimeInterval = 1;
     
     constructor() {
         this.TimerId = 0;
+        this.TimeCounter = 0
+        this.TimeInterval = 0.1;
     }
 
     time() {
-        Timer.TimeCounter += Timer.TimeInterval;
+        this.TimeCounter += this.TimeInterval;
+    }
+
+    setSpeed(speed) {
+        this.TimeInterval = speed / 10.0;
     }
 
     start() {
-        this.TimerId = setInterval(this.time, 1000);
+        var that = this;
+        this.TimerId = setInterval(
+            function() {
+                that.time()
+            }, 100);
     }
 
     stop() {

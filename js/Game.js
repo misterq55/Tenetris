@@ -12,11 +12,10 @@ class Game {
 
         this.Mesh = new THREE.Group();
         this.GameTimer = new Timer();
+        this.GameTimer.setSpeed(1);
 
         this.CurrentTMino = null;
         this.PlayField = new Field();
-
-        this.PlayField.setGameTimer(this.GameTimer);
 
         this.setTetromino(this.TMinoPool.popTetromino());
 
@@ -93,7 +92,7 @@ class Game {
                 }
 
                 this.setTetromino(null);
-                
+
                 this.GameTimer.sleep(500).then(() => {
                     this.setTetromino(this.TMinoPool.popTetromino());
                 })
@@ -118,19 +117,35 @@ class Game {
         }
     }
 
-    
+
 
     update() {
         this.PlayField.update();
 
-        if (Timer.TimeCounter > 1) {
-            Timer.TimeCounter = 0
+        switch (this.TInversionSwitch) {
+            case 0:
+                if (this.GameTimer.TimeCounter > 1) {
+                    this.GameTimer.TimeCounter = 0
 
-            if (this.CurrentTMino != null) {
-                this.moveStateCheck(this.DownIndex);
-            }
+                    if (this.CurrentTMino != null) {
+                        this.moveStateCheck(this.DownIndex);
+                    }
+                }
+
+                break;
+
+            case 1:
+                if (this.GameTimer.TimeCounter > 0.1) {
+                    this.GameTimer.TimeCounter = 0
+
+                    if (this.CurrentTMino != null) {
+                        if (this.CurrentTMino.inverseTetromino() == 1) {
+                            this.timeInversion();
+                        }
+                    }
+                }
+                break;
         }
-
     }
 
     spaceInversion() {
@@ -161,6 +176,10 @@ class Game {
     }
 
     setKeyCode(keyCode) {
+        if (this.TInversionSwitch == 1) {
+            return;
+        }
+
         switch (keyCode) {
             case KeyManager.getInstance().getKey("Left"):
                 if (this.CurrentTMino != null) {
@@ -210,6 +229,10 @@ class Game {
             case KeyManager.getInstance().getKey("SpaceInversion"):
                 this.spaceInversion();
                 break;
+
+            // case KeyManager.getInstance().getKey("TimeInversion"):
+            //     this.timeInversion();
+            //     break;
         }
     }
 }

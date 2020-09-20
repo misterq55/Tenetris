@@ -14,7 +14,7 @@ class Field {
 
         this.Mesh.position.set(5.5, 0, 0);
 
-        this.GameTimer = null;
+        this.FieldTimer = new Timer();
 
         this.Buffer = null;
         this.ReverseBuffer = null;
@@ -33,14 +33,11 @@ class Field {
 
         this.RotateStatus = 0;
         this.YAngle = 0;
+        this.RotateSpeed = 3;
 
         this.HeightBuffer = new Array(this.FieldWidth + 2);
 
         this.init();
-    }
-
-    setGameTimer (gameTimer) {
-        this.GameTimer = gameTimer;
     }
 
     setTetromino(currentTetromino) {
@@ -119,11 +116,11 @@ class Field {
                 return;
 
             case 1:
-                this.YAngle -= (1 / 180.0 * Math.PI);
+                this.YAngle -= (1 * this.RotateSpeed / 180.0 * Math.PI);
                 break;
 
             case 2:
-                this.YAngle += (1 / 180.0 * Math.PI);
+                this.YAngle += (1 * this.RotateSpeed / 180.0 * Math.PI);
                 break;
         }
 
@@ -152,7 +149,7 @@ class Field {
                 return -1;
             }
             else if (this.CurrentBufferPointer[y][x] > 0) {
-                if (moveIndex[0] != 0) {
+                if (moveIndex[1] < 0) {
                     return 2;
                 }
 
@@ -209,45 +206,47 @@ class Field {
 
         var deleteVar = 0;
 
-        for (var i = 1; i < this.FieldHeight + 1; i++) {
-            if (this.LineChecker[i] > 0) {
-                for (var j = 1; j < this.FieldWidth + 1; j++) {
+        this.FieldTimer.sleep(400).then(() => {
+            for (var i = 1; i < this.FieldHeight + 1; i++) {
+                if (this.LineChecker[i] > 0) {
+                    for (var j = 1; j < this.FieldWidth + 1; j++) {
 
-                    var x = 0;
-                    var y = 0;
+                        var x = 0;
+                        var y = 0;
 
-                    if (this.SInversionSwitch == 0) {
-                        x = j;
-                        y = i;
+                        if (this.SInversionSwitch == 0) {
+                            x = j;
+                            y = i;
+                        }
+                        else if (this.SInversionSwitch == 1) {
+                            x = this.FieldWidth - j + 1;
+                            y = i;
+                        }
+
+                        var baseCube = this.BaseCubes[y][x];
+
+                        if (baseCube != null) {
+
+                            this.CurrentBufferPointer[i][j] = 0;
+                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
+
+                            this.BaseCubes[y][x] = null;
+
+                            this.FieldMesh.remove(baseCube.Mesh);
+                        }
                     }
-                    else if (this.SInversionSwitch == 1) {
-                        x = this.FieldWidth - j + 1;
-                        y = i;
-                    }
 
-                    var baseCube = this.BaseCubes[y][x];
+                    this.LineChecker[i] = 0;
 
-                    if (baseCube != null) {
-
-                        this.CurrentBufferPointer[i][j] = 0;
-                        this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
-
-                        this.BaseCubes[y][x] = null;
-
-                        this.FieldMesh.remove(baseCube.Mesh);
-                    }
+                    deleteVar++;
                 }
-
-                this.LineChecker[i] = 0;
-
-                deleteVar++;
+                else {
+                    this.DeleteChecker[i] = deleteVar;
+                }
             }
-            else {
-                this.DeleteChecker[i] = deleteVar;
-            }
-        }
+        })
 
-        this.GameTimer.sleep(200).then(() => {
+        this.FieldTimer.sleep(400).then(() => {
             if (deleteVar > 0) {
                 for (var i = 1; i < this.FieldHeight + 1; i++) {
                     if (this.DeleteChecker[i] > 0) {
