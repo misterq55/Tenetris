@@ -39,7 +39,7 @@ function loadTexture() {
 	p.then(_ => new Promise(
 		resolve =>
 		setTimeout(function () {
-			TenettrisGame = new Game();
+			TenettrisGame = Game.getInstance();
 			Scene.add(TenettrisGame.Mesh);
 			
 			resolve();

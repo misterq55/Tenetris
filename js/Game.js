@@ -1,4 +1,6 @@
 class Game {
+    static Instance = null;
+
     constructor() {
         Tetromino.StartIndex = [4, 20];
 
@@ -13,13 +15,16 @@ class Game {
 
         this.CurrentTMino = null;
         this.PlayField = new Field();
-        
+
+        this.PlayField.setGameTimer(this.GameTimer);
+
         this.setTetromino(this.TMinoPool.popTetromino());
 
         this.Mesh.add(this.PlayField.Mesh);
         this.Mesh.add(this.PlayField.EdgeMesh);
 
         this.SInversionSwitch = 0;
+        this.TInversionSwitch = 0;
 
         this.DownIndex = [0, -1];
         this.MoveIndex = [0, 0];
@@ -27,10 +32,16 @@ class Game {
         this.start();
     }
 
-    
+    static getInstance() {
+        if (this.Instance == null) {
+            this.Instance = new Game();
+        }
+
+        return this.Instance;
+    }
 
     init() {
-        
+
     }
 
     start() {
@@ -75,14 +86,18 @@ class Game {
                 this.CurrentTMino.retriveMove(index)
                 this.PlayField.lineDelete();
 
-                if (this.TMinoPool.getSize() <= 0){
+                if (this.TMinoPool.getSize() <= 0) {
                     this.CurrentTMino = null;
-                    
+
                     break;
                 }
+
+                this.setTetromino(null);
                 
-                this.setTetromino(this.TMinoPool.popTetromino());
-                
+                this.GameTimer.sleep(500).then(() => {
+                    this.setTetromino(this.TMinoPool.popTetromino());
+                })
+
                 break;
         }
     }
@@ -103,12 +118,14 @@ class Game {
         }
     }
 
+    
+
     update() {
         this.PlayField.update();
 
         if (Timer.TimeCounter > 1) {
             Timer.TimeCounter = 0
-            
+
             if (this.CurrentTMino != null) {
                 this.moveStateCheck(this.DownIndex);
             }
@@ -117,7 +134,7 @@ class Game {
     }
 
     spaceInversion() {
-        switch(this.SInversionSwitch) {
+        switch (this.SInversionSwitch) {
             case 0:
                 this.SInversionSwitch = 1;
                 break;
@@ -130,12 +147,25 @@ class Game {
         this.PlayField.startRotate(this.SInversionSwitch);
     }
 
+    timeInversion() {
+        switch (this.TInversionSwitch) {
+            case 0:
+                this.TInversionSwitch = 1;
+                break;
+
+            case 1:
+                this.TInversionSwitch = 0;
+                break;
+
+        }
+    }
+
     setKeyCode(keyCode) {
         switch (keyCode) {
             case KeyManager.getInstance().getKey("Left"):
                 if (this.CurrentTMino != null) {
                     this.MoveIndex = [-1, 0];
-                    
+
                     this.moveStateCheck(this.MoveIndex);
                 }
                 break;
@@ -143,7 +173,7 @@ class Game {
             case KeyManager.getInstance().getKey("Right"):
                 if (this.CurrentTMino != null) {
                     this.MoveIndex = [1, 0];
-                    
+
                     this.moveStateCheck(this.MoveIndex);
                 }
                 break;
@@ -151,7 +181,7 @@ class Game {
             case KeyManager.getInstance().getKey("Down"):
                 if (this.CurrentTMino != null) {
                     this.MoveIndex = [0, -1];
-                    
+
                     this.moveStateCheck(this.MoveIndex);
                 }
                 break;
