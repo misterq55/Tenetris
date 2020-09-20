@@ -16,6 +16,8 @@ class Game {
         this.CurrentTMino = null;
         this.PlayField = new Field();
 
+        this.PlayField.setGameTimer(this.GameTimer);
+
         this.setTetromino(this.TMinoPool.popTetromino());
 
         this.Mesh.add(this.PlayField.Mesh);
@@ -90,7 +92,11 @@ class Game {
                     break;
                 }
 
-                this.setTetromino(this.TMinoPool.popTetromino());
+                this.setTetromino(null);
+                
+                this.GameTimer.sleep(500).then(() => {
+                    this.setTetromino(this.TMinoPool.popTetromino());
+                })
 
                 break;
         }
@@ -111,6 +117,8 @@ class Game {
                 break;
         }
     }
+
+    
 
     update() {
         this.PlayField.update();

@@ -14,6 +14,8 @@ class Field {
 
         this.Mesh.position.set(5.5, 0, 0);
 
+        this.GameTimer = null;
+
         this.Buffer = null;
         this.ReverseBuffer = null;
 
@@ -35,6 +37,10 @@ class Field {
         this.HeightBuffer = new Array(this.FieldWidth + 2);
 
         this.init();
+    }
+
+    setGameTimer (gameTimer) {
+        this.GameTimer = gameTimer;
     }
 
     setTetromino(currentTetromino) {
@@ -157,10 +163,6 @@ class Field {
         return 1;
     }
 
-    sleep(milliseconds) {
-        return new Promise(resolve => setTimeout(resolve, milliseconds));
-    }
-
     lineDelete() {
         var tminoBuffer = this.CurrentTetromino.getPreMoveIndex();
 
@@ -245,7 +247,7 @@ class Field {
             }
         }
 
-        this.sleep(200).then(() => {
+        this.GameTimer.sleep(200).then(() => {
             if (deleteVar > 0) {
                 for (var i = 1; i < this.FieldHeight + 1; i++) {
                     if (this.DeleteChecker[i] > 0) {

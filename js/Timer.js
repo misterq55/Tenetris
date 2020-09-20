@@ -1,6 +1,7 @@
 class Timer {
     static TimeCounter = 0
     static TimeInterval = 1;
+    
     constructor() {
         this.TimerId = 0;
     }
@@ -15,5 +16,9 @@ class Timer {
 
     stop() {
         clearInterval(this.TimerId)
+    }
+
+    sleep(milliseconds) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
     }
 }
