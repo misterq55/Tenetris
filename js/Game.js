@@ -117,7 +117,7 @@ class Game {
                 this.ControllSwitch = 1;
 
                 if (this.TInversionSwitch != 1) {
-                    this.GameTimer.sleep(500).then(() => {
+                    this.GameTimer.sleep(0).then(() => {
                         this.ControllSwitch = 0;
                         this.setTetromino(this.TMinoPool.shiftTetromino());
                     })

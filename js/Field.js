@@ -191,11 +191,11 @@ class Field {
                             var index = baseCube.getIndex();
                             index[1] += this.PrevDeleteChecker[i];
 
-                            this.CurrentBufferPointer[i][j] = this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j];
-                            this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = 0;
+                            this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
+                            this.CurrentBufferPointer[i][j] = 0;
 
-                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1];
-                            this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1] = 0;
+                            this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1]= this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
+                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
                             baseCube.setIndex(index);
 
