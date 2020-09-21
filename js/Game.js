@@ -66,6 +66,7 @@ class Game {
         }
 
         this.PrevTMino = this.CurrentTMino;
+        this.PlayField.setPrevTetromino(this.PrevTMino);
         this.CurrentTMino = tetromino;
         this.PlayField.setTetromino(this.CurrentTMino);
     }
@@ -168,7 +169,9 @@ class Game {
                                 else {
                                     owner.PlayField.inverseLines();
                                     owner.TMinoPool.unshiftTetromino(owner.CurrentTMino);
-                                    owner.inverseSetTetromino();
+                                    owner.GameTimer.sleep(0).then(() => {
+                                        owner.inverseSetTetromino();
+                                    })
                                 }
                             }
                         }
@@ -255,9 +258,9 @@ class Game {
                 this.GameTimer.stop();
                 break;
 
-            case KeyManager.getInstance().getKey("SpaceInversion"):
-                this.spaceInversion();
-                break;
+            // case KeyManager.getInstance().getKey("SpaceInversion"):
+            //     this.spaceInversion();
+            //     break;
 
             case KeyManager.getInstance().getKey("TimeInversion"):
                 this.timeInversion();

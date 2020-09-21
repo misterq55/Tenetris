@@ -5,6 +5,9 @@ class TetrominoBag {
         for (var i = 0; i < 7; i++) {
             var cubeTextureName = OptionManager.getInstance().MinoTextureDictionary[i];
             this.Bag.push(this.createTetromino(i, TextureManager.getInstance().Dictionary[cubeTextureName]));
+
+            // var cubeTextureName = OptionManager.getInstance().MinoTextureDictionary[1];
+            // this.Bag.push(this.createTetromino(1, TextureManager.getInstance().Dictionary[cubeTextureName]));
         }
 
         this.shuffle();

@@ -7,7 +7,17 @@ class BaseCube {
         var tex = new THREE.MeshLambertMaterial({map: cubeTexture});
 
         this.Mesh = new THREE.Mesh(geometry, tex);
+
+        this.Type = -1;
         this.setIndex(index)
+    }
+
+    setType(type) {
+        this.Type = type;
+    }
+
+    getType() {
+        return this.Type;
     }
 
     setIndex(index) {
@@ -77,6 +87,7 @@ class Tetromino {
             moveIndex[i] = [newX, newY];
 
             var basecube = new BaseCube(this.CubeTexture, index)
+            basecube.setType(this.TetrominoType);
             this.BaseCubes[i] = basecube
         }
 
