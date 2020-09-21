@@ -46,7 +46,7 @@ class TetrominoBag {
         return this.Size;
     }
 
-    popTetromino() {
+    shiftTetromino() {
         var tetromino = this.Bag[0];
         this.Bag.shift();
 
@@ -80,11 +80,15 @@ class TetrominoPool {
         var tetrominoBag = new TetrominoBag();
         
         for (var i = 0; i < tetrominoBag.getSize(); i++) {
-            this.Pool.push(tetrominoBag.popTetromino());
+            this.Pool.push(tetrominoBag.shiftTetromino());
         }
     }
 
-    popTetromino() {
+    unshiftTetromino(tetromino) {
+        this.Pool.unshift(tetromino);
+    }
+
+    shiftTetromino() {
      var tetromino = this.Pool[0];
      this.Pool.shift();
 

@@ -29,4 +29,11 @@ class Timer {
     sleep(milliseconds) {
         return new Promise(resolve => setTimeout(resolve, milliseconds));
     }
+
+    update(owner, timeInterval, callback) {
+        if (this.TimeCounter > timeInterval){
+            this.TimeCounter = 0;
+            callback(owner);
+        }
+    }
 }

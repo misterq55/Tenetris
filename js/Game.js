@@ -17,7 +17,8 @@ class Game {
         this.CurrentTMino = null;
         this.PlayField = new Field();
 
-        this.setTetromino(this.TMinoPool.popTetromino());
+        this.setTetromino(this.TMinoPool.shiftTetromino());
+        this.ControllSwitch = 0;
 
         this.Mesh.add(this.PlayField.Mesh);
         this.Mesh.add(this.PlayField.EdgeMesh);
@@ -64,8 +65,30 @@ class Game {
             }
         }
 
+        this.PrevTMino = this.CurrentTMino;
         this.CurrentTMino = tetromino;
         this.PlayField.setTetromino(this.CurrentTMino);
+    }
+
+    inverseSetTetromino() {
+        if (this.PrevTMino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = this.PrevTMino.getBaseCubes(i);
+
+                this.Mesh.add(baseCube.Mesh);
+            }
+        }
+
+        if (this.CurrentTMino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = this.CurrentTMino.getBaseCubes(i);
+
+                this.Mesh.remove(baseCube.Mesh);
+            }
+        }
+
+        this.CurrentTMino = this.PrevTMino;
+        this.PrevTMino = null;
     }
 
     moveStateCheck(index) {
@@ -86,16 +109,19 @@ class Game {
                 this.PlayField.lineDelete();
 
                 if (this.TMinoPool.getSize() <= 0) {
-                    this.CurrentTMino = null;
+                    this.setTetromino(null);
 
                     break;
                 }
 
-                this.setTetromino(null);
+                this.ControllSwitch = 1;
 
-                this.GameTimer.sleep(500).then(() => {
-                    this.setTetromino(this.TMinoPool.popTetromino());
-                })
+                if (this.TInversionSwitch != 1) {
+                    this.GameTimer.sleep(500).then(() => {
+                        this.ControllSwitch = 0;
+                        this.setTetromino(this.TMinoPool.shiftTetromino());
+                    })
+                }
 
                 break;
         }
@@ -117,33 +143,36 @@ class Game {
         }
     }
 
-
-
     update() {
         this.PlayField.update();
 
         switch (this.TInversionSwitch) {
             case 0:
-                if (this.GameTimer.TimeCounter > 1) {
-                    this.GameTimer.TimeCounter = 0
-
-                    if (this.CurrentTMino != null) {
-                        this.moveStateCheck(this.DownIndex);
-                    }
-                }
+                this.GameTimer.update(this, 1,
+                    function (owner) {
+                        if (owner.CurrentTMino != null) {
+                            owner.moveStateCheck(owner.DownIndex);
+                        }
+                    });
 
                 break;
 
             case 1:
-                if (this.GameTimer.TimeCounter > 0.1) {
-                    this.GameTimer.TimeCounter = 0
-
-                    if (this.CurrentTMino != null) {
-                        if (this.CurrentTMino.inverseTetromino() == 1) {
-                            this.timeInversion();
+                this.GameTimer.update(this, 0.05,
+                    function (owner) {
+                        if (owner.CurrentTMino != null) {
+                            if (owner.CurrentTMino.inverseTetromino() == 1) {
+                                if (owner.PrevTMino == null) {
+                                    owner.timeInversion();
+                                }
+                                else {
+                                    owner.PlayField.inverseLines();
+                                    owner.TMinoPool.unshiftTetromino(owner.CurrentTMino);
+                                    owner.inverseSetTetromino();
+                                }
+                            }
                         }
-                    }
-                }
+                    });
                 break;
         }
     }
@@ -176,7 +205,7 @@ class Game {
     }
 
     setKeyCode(keyCode) {
-        if (this.TInversionSwitch == 1) {
+        if (this.TInversionSwitch == 1 || this.ControllSwitch == 1) {
             return;
         }
 
@@ -230,9 +259,9 @@ class Game {
                 this.spaceInversion();
                 break;
 
-            // case KeyManager.getInstance().getKey("TimeInversion"):
-            //     this.timeInversion();
-            //     break;
+            case KeyManager.getInstance().getKey("TimeInversion"):
+                this.timeInversion();
+                break;
         }
     }
 }
