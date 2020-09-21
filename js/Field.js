@@ -179,7 +179,7 @@ class Field {
     inverseLines() {
         this.FieldTimer.sleep(400).then(() => {
             for (var i = 1; i < this.FieldHeight + 1; i++) {
-                if (this.DeleteChecker[i] > 0) {
+                if (this.PrevDeleteChecker[i] > 0) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
 
                         var x = j;
@@ -189,23 +189,23 @@ class Field {
 
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
-                            index[1] += this.DeleteChecker[i];
+                            index[1] += this.PrevDeleteChecker[i];
 
-                            this.CurrentBufferPointer[i][j] = this.CurrentBufferPointer[i + this.DeleteChecker[i]][j];
-                            this.CurrentBufferPointer[i + this.DeleteChecker[i]][j] = 0;
+                            this.CurrentBufferPointer[i][j] = this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j];
+                            this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = 0;
 
-                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i + this.DeleteChecker[i]][this.FieldWidth - j + 1];
-                            this.AnotherBufferPointer[i + this.DeleteChecker[i]][this.FieldWidth - j + 1] = 0;
+                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1];
+                            this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1] = 0;
 
                             baseCube.setIndex(index);
 
-                            this.BaseCubes[y + this.DeleteChecker[i]][x] = baseCube;
+                            this.BaseCubes[y + this.PrevDeleteChecker[i]][x] = baseCube;
                             this.BaseCubes[y][x] = null;
                         }
                     }
                 }
 
-                this.DeleteChecker[i] = 0;
+                this.PrevDeleteChecker[i] = 0;
             }
         })
         
