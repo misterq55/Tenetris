@@ -58,9 +58,19 @@ class Tetromino {
 
         this.StartIndex = new Array(4);
 
+        this.SpaceInversionType = 0;
+
         for (var i = 0; i < this.Buffer.length; i++) {
             this.Buffer[i] = new Array(4);
         }
+    }
+
+    getSpaceInversionType() {
+        return this.SpaceInversionType;
+    }
+    
+    setSpaceInversionType(spaceInversionType) {
+        this.SpaceInversionType = spaceInversionType;
     }
 
     getTetrominoType() {
@@ -373,7 +383,8 @@ class IMino extends Tetromino {
 class OMino extends Tetromino {
     constructor(cubeTexture) {
         super(cubeTexture)
-        this.IndexArr = [[1, 0], [1, 1], [2, 0], [2, 1]]
+        // this.IndexArr = [[1, 0], [1, 1], [2, 0], [2, 1]]
+        this.IndexArr = [[1, 1], [1, 2], [2, 1], [2, 2]]
 
         this.TetrominoType = 5;
 

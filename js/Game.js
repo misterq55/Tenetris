@@ -2,7 +2,9 @@ class Game {
     static Instance = null;
 
     constructor() {
-        Tetromino.StartIndex = [4, 20];
+        this.PlayField = new Field();
+        this.PlayField.setPosition(new THREE.Vector3(0, 0, 0));
+        this.PlayField.setScale(new THREE.Vector3(1, 1, 1));
 
         this.TMinoPool = new TetrominoPool();
 
@@ -15,13 +17,11 @@ class Game {
         this.GameTimer.setSpeed(1);
 
         this.CurrentTMino = null;
-        this.PlayField = new Field();
-
+        
         this.setTetromino(this.TMinoPool.shiftTetromino());
         this.ControllSwitch = 0;
 
         this.Mesh.add(this.PlayField.Mesh);
-        this.Mesh.add(this.PlayField.EdgeMesh);
 
         this.SInversionSwitch = 0;
         this.TInversionSwitch = 0;
@@ -53,7 +53,7 @@ class Game {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.CurrentTMino.getBaseCubes(i);
 
-                this.Mesh.remove(baseCube.Mesh);
+                this.PlayField.Mesh.remove(baseCube.Mesh);
             }
         }
 
@@ -61,7 +61,7 @@ class Game {
             for (var i = 0; i < 4; i++) {
                 var baseCube = tetromino.getBaseCubes(i);
 
-                this.Mesh.add(baseCube.Mesh);
+                this.PlayField.Mesh.add(baseCube.Mesh);
             }
         }
 
@@ -69,6 +69,8 @@ class Game {
         this.PlayField.setPrevTetromino(this.PrevTMino);
         this.CurrentTMino = tetromino;
         this.PlayField.setTetromino(this.CurrentTMino);
+
+        this.CurrentTMino.setSpaceInversionType(this.SInversionSwitch);
     }
 
     inverseSetTetromino() {
@@ -76,7 +78,7 @@ class Game {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.PrevTMino.getBaseCubes(i);
 
-                this.Mesh.add(baseCube.Mesh);
+                this.PlayField.Mesh.add(baseCube.Mesh);
             }
         }
 
@@ -84,7 +86,7 @@ class Game {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.CurrentTMino.getBaseCubes(i);
 
-                this.Mesh.remove(baseCube.Mesh);
+                this.PlayField.Mesh.remove(baseCube.Mesh);
             }
         }
 
@@ -171,6 +173,7 @@ class Game {
                                     owner.TMinoPool.unshiftTetromino(owner.CurrentTMino);
                                     owner.GameTimer.sleep(0).then(() => {
                                         owner.inverseSetTetromino();
+
                                     })
                                 }
                             }
@@ -258,13 +261,13 @@ class Game {
                 this.GameTimer.stop();
                 break;
 
-            // case KeyManager.getInstance().getKey("SpaceInversion"):
-            //     this.spaceInversion();
-            //     break;
-
-            case KeyManager.getInstance().getKey("TimeInversion"):
-                this.timeInversion();
+            case KeyManager.getInstance().getKey("SpaceInversion"):
+                this.spaceInversion();
                 break;
+
+            // case KeyManager.getInstance().getKey("TimeInversion"):
+            //     this.timeInversion();
+            //     break;
         }
     }
 }

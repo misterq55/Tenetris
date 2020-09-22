@@ -9,10 +9,13 @@ class Field {
         this.EdgeMesh = new THREE.Group();
         this.EdgeMesh.position.set(0, 0, 0);
 
-        this.Mesh = new THREE.Group();
-        this.Mesh.add(this.FieldMesh);
+        this.CenterMesh = new THREE.Group();
+        this.CenterMesh.add(this.FieldMesh);
+        this.CenterMesh.position.set(5.5, 0, 0);
 
-        this.Mesh.position.set(5.5, 0, 0);
+        this.Mesh = new THREE.Group();
+        this.Mesh.add(this.CenterMesh);
+        this.Mesh.add(this.EdgeMesh);
 
         this.FieldTimer = new Timer();
 
@@ -43,7 +46,18 @@ class Field {
 
         this.HeightBuffer = new Array(this.FieldWidth + 2);
 
+        Tetromino.StartIndex = [4, 20];
+
         this.init();
+    }
+
+    setPosition(pos) {
+        Tetromino.StartIndex[0] += pos.x;
+        this.Mesh.position.set(pos.x, pos.y, pos.z);
+    }
+
+    setScale(scale) {
+        this.Mesh.scale.set(scale.x, scale.y, scale.z);
     }
 
     setTetromino(currentTetromino) {
@@ -152,7 +166,7 @@ class Field {
             this.RotateStatus = 0;
         }
 
-        this.Mesh.rotation.set(0, this.YAngle, 0);
+        this.CenterMesh.rotation.set(0, this.YAngle, 0);
     }
 
     checkTetromino(preCheckIndex, moveIndex) {
@@ -233,15 +247,7 @@ class Field {
                 }
             }
 
-            // var tminoBuffer = this.PrevTetromino.getPreMoveIndex();
-
             for (var i = 0; i < 4; i++) {
-
-                // var x = tminoBuffer[i][0];
-                // var y = tminoBuffer[i][1];
-
-                // var baseCube = this.BaseCubes[y][x];
-
                 var baseCube = this.PrevTetromino.getBaseCubes(i);
                 var index = baseCube.getIndex();
 
