@@ -18,6 +18,7 @@ class Field {
         this.Mesh.add(this.EdgeMesh);
 
         this.FieldTimer = new Timer();
+        this.FieldTimer.setSpeed(1);
 
         this.Buffer = null;
         this.ReverseBuffer = null;
@@ -36,6 +37,7 @@ class Field {
         this.PrevLineChecker = null;
         this.PrevDeleteChecker = null;
 
+        this.TInversionSwitch = 0;
         this.SInversionSwitch = 0;
 
         this.RotateStatus = 0;
@@ -44,11 +46,19 @@ class Field {
 
         this.PrevSInversionSwitch = -1;
 
+        this.ControllSwitch = 0;
+
         this.HeightBuffer = new Array(this.FieldWidth + 2);
 
         Tetromino.StartIndex = [4, 20];
 
+        this.TMinoPool = new TetrominoPool();
+
         this.init();
+    }
+
+    start() {
+        this.FieldTimer.start();
     }
 
     setPosition(pos) {
@@ -60,12 +70,65 @@ class Field {
         this.Mesh.scale.set(scale.x, scale.y, scale.z);
     }
 
-    setTetromino(currentTetromino) {
-        this.CurrentTetromino = currentTetromino;
+    setControlSwitch(controllSwitch) {
+        this.ControllSwitch = controllSwitch;
     }
 
-    setPrevTetromino(prevTetromino) {
-        this.PrevTetromino = prevTetromino;
+    getControlSwitch() {
+        return this.ControllSwitch;
+    }
+
+    timeInversion(tinversionSwitch) {
+        this.TInversionSwitch = tinversionSwitch;
+    }
+
+    setTetromino(tetromino) {
+
+        if (this.CurrentTetromino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = this.CurrentTetromino.getBaseCubes(i);
+
+                this.Mesh.remove(baseCube.Mesh);
+            }
+        }
+
+        if (tetromino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = tetromino.getBaseCubes(i);
+
+                this.Mesh.add(baseCube.Mesh);
+            }
+        }
+
+        this.PrevTetromino = this.CurrentTetromino;
+        this.CurrentTetromino = tetromino;
+
+        this.CurrentTetromino.setSpaceInversionType(this.SInversionSwitch);
+    }
+
+    getTetromino() {
+        return this.CurrentTetromino;
+    }
+
+    inverseSetTetromino() {
+        if (this.PrevTetromino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = this.PrevTetromino.getBaseCubes(i);
+
+                this.Mesh.add(baseCube.Mesh);
+            }
+        }
+
+        if (this.CurrentTetromino != null) {
+            for (var i = 0; i < 4; i++) {
+                var baseCube = this.CurrentTetromino.getBaseCubes(i);
+
+                this.Mesh.remove(baseCube.Mesh);
+            }
+        }
+
+        this.CurrentTetromino = this.PrevTetromino;
+        this.PrevTetromino = null;
     }
 
     init() {
@@ -85,6 +148,8 @@ class Field {
         this.PrevDeleteChecker = new Array(this.FieldHeight + 2);
 
         let texture = TextureManager.getInstance().Dictionary["grey"];
+
+        this.setTetromino(this.TMinoPool.shiftTetromino());
 
         for (var i = 0; i < this.FieldHeight + 2; i++) {
             this.Buffer[i] = new Array(this.FieldWidth + 2);
@@ -130,15 +195,49 @@ class Field {
             this.CurrentBufferPointer = this.ReverseBuffer;
             this.AnotherBufferPointer = this.Buffer;
         }
+
+        this.startRotate(this.SInversionSwitch);
     }
 
-    update() {
+    update(index) {
         this.rotateField();
+
+        switch (this.TInversionSwitch) {
+            case 0:
+                this.FieldTimer.update(this, 1,
+                    function (owner) {
+                        if (owner.CurrentTetromino != null) {
+                            owner.moveStateCheck(index);
+                        }
+                    });
+
+                break;
+
+            case 1:
+                this.FieldTimer.update(this, 0.05,
+                    function (owner) {
+                        if (owner.CurrentTetromino != null) {
+                            if (owner.CurrentTetromino.inverseTetromino() == 1) {
+                                if (owner.PrevTetromino == null) {
+                                    owner.timeInversion();
+                                }
+                                else {
+                                    owner.inverseLines();
+                                    owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
+                                    owner.FieldTimer.sleep(0).then(() => {
+                                        owner.inverseSetTetromino();
+
+                                    })
+                                }
+                            }
+                        }
+                    });
+                break;
+        }
     }
 
     startRotate(dir) {
         if (this.RotateStatus == 0) {
-            this.spaceInversion(dir);
             this.RotateStatus = dir + 1;
         }
     }
@@ -169,7 +268,8 @@ class Field {
         this.CenterMesh.rotation.set(0, this.YAngle, 0);
     }
 
-    checkTetromino(preCheckIndex, moveIndex) {
+    checkTetromino(moveIndex) {
+        var preCheckIndex = this.CurrentTetromino.getPreMoveIndex();
         for (var i = 0; i < 4; i++) {
             var x = preCheckIndex[i][0];
             var y = preCheckIndex[i][1];
@@ -191,6 +291,66 @@ class Field {
         }
 
         return 1;
+    }
+
+    moveStateCheck(index) {
+        if (this.CurrentTetromino == null) {
+            return;
+        }
+
+        this.CurrentTetromino.move(index);
+
+        var state = this.checkTetromino(index);
+        switch (state) {
+            case 1:
+                this.CurrentTetromino.applyIndex();
+                break;
+
+            case -1:
+                this.CurrentTetromino.retriveMove(index)
+                break;
+
+            case 2:
+                this.CurrentTetromino.retriveMove(index)
+                this.lineDelete();
+
+                if (this.TMinoPool.getSize() <= 0) {
+                    this.setTetromino(null);
+
+                    break;
+                }
+
+                this.ControllSwitch = 1;
+
+                if (this.TInversionSwitch != 1) {
+                    this.FieldTimer.sleep(0).then(() => {
+                        this.ControllSwitch = 0;
+                        this.setTetromino(this.TMinoPool.shiftTetromino());
+                    })
+                }
+
+                break;
+        }
+    }
+
+    rotateStateCheck(dir) {
+        if (this.CurrentTetromino == null) {
+            return;
+        }
+        
+        this.CurrentTetromino.rotate(dir)
+
+        var state = this.checkTetromino([0, 0]);
+        switch (state) {
+            case 1:
+                this.CurrentTetromino.applyIndex();
+                break;
+
+            case -1:
+            case 2:
+                this.CurrentTetromino.retriveRotate();
+                break;
+        }
     }
 
     inverseLines() {
