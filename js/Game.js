@@ -83,7 +83,7 @@ class Game {
     }
 
     setKeyCode(keyCode) {
-        if (this.TInversionSwitch == 1 || this.PlayField.getControlSwitch()) {
+        if (this.PlayField.getTimeInversion() == 1 || this.PlayField.getControlSwitch()) {
             return;
         }
 

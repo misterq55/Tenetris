@@ -17,6 +17,9 @@ class Field {
         this.Mesh.add(this.CenterMesh);
         this.Mesh.add(this.EdgeMesh);
 
+        this.TetrominoMesh = new THREE.Group();
+        this.Mesh.add(this.TetrominoMesh);
+
         this.FieldTimer = new Timer();
         this.FieldTimer.setSpeed(1);
 
@@ -83,12 +86,11 @@ class Field {
     }
 
     setTetromino(tetromino) {
-
         if (this.CurrentTetromino != null) {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.CurrentTetromino.getBaseCubes(i);
 
-                this.Mesh.remove(baseCube.Mesh);
+                this.TetrominoMesh.remove(baseCube.Mesh);
             }
         }
 
@@ -96,7 +98,7 @@ class Field {
             for (var i = 0; i < 4; i++) {
                 var baseCube = tetromino.getBaseCubes(i);
 
-                this.Mesh.add(baseCube.Mesh);
+                this.TetrominoMesh.add(baseCube.Mesh);
             }
         }
 
@@ -115,7 +117,7 @@ class Field {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.PrevTetromino.getBaseCubes(i);
 
-                this.Mesh.add(baseCube.Mesh);
+                this.TetrominoMesh.add(baseCube.Mesh);
             }
         }
 
@@ -123,7 +125,7 @@ class Field {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.CurrentTetromino.getBaseCubes(i);
 
-                this.Mesh.remove(baseCube.Mesh);
+                this.TetrominoMesh.remove(baseCube.Mesh);
             }
         }
 
@@ -199,6 +201,10 @@ class Field {
         this.startRotate(this.SInversionSwitch);
     }
 
+    getTimeInversion() {
+        return this.TInversionSwitch;
+    }
+
     update(index) {
         this.rotateField();
 
@@ -219,7 +225,7 @@ class Field {
                         if (owner.CurrentTetromino != null) {
                             if (owner.CurrentTetromino.inverseTetromino() == 1) {
                                 if (owner.PrevTetromino == null) {
-                                    owner.timeInversion();
+                                    owner.timeInversion(0);
                                 }
                                 else {
                                     owner.inverseLines();
@@ -408,7 +414,7 @@ class Field {
             }
 
             for (var i = 0; i < 4; i++) {
-                var baseCube = this.PrevTetromino.getBaseCubes(i);
+                var baseCube = this.CurrentTetromino.getBaseCubes(i);
                 var index = baseCube.getIndex();
 
                 var x = index[0];
@@ -420,8 +426,6 @@ class Field {
                 this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = 0;
             }
         })
-
-        this.CurrentTetromino = this.PrevTetromino;
     }
 
     lineDelete() {
