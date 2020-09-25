@@ -1,13 +1,9 @@
 class BaseCube {
     constructor(cubeTexture, index) {
         this.Position = new THREE.Vector3(0, 0, 0);
-
         var geometry = new THREE.BoxGeometry(1, 1, 1);
-
         var tex = new THREE.MeshLambertMaterial({map: cubeTexture});
-
         this.Mesh = new THREE.Mesh(geometry, tex);
-
         this.Type = -1;
         this.setIndex(index)
     }
@@ -263,10 +259,19 @@ class Tetromino {
         if (this.MoveIndexArray.length <= 0) {
             this.MoveAccumulate[0] = this.MoveAccumulate[1] = 0;
             
+            var moveIndex = new Array(4);
+            
             for (var i = 0; i < 4; i++) {
                 this.IndexArr[i][0] = this.StartIndex[i][0];
                 this.IndexArr[i][1] = this.StartIndex[i][1];
+
+                var newX = parseInt(this.BaseIndex[0], 10) + parseInt(this.IndexArr[i][0], 10);
+                var newY = parseInt(this.BaseIndex[1], 10) + parseInt(this.IndexArr[i][1], 10);
+
+                moveIndex[i] = [newX, newY];
             }
+
+            this.MoveIndexArray.push(moveIndex);
 
             return 1;
         }
@@ -383,7 +388,6 @@ class IMino extends Tetromino {
 class OMino extends Tetromino {
     constructor(cubeTexture) {
         super(cubeTexture)
-        // this.IndexArr = [[1, 0], [1, 1], [2, 0], [2, 1]]
         this.IndexArr = [[1, 1], [1, 2], [2, 1], [2, 2]]
 
         this.TetrominoType = 5;

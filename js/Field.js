@@ -57,6 +57,10 @@ class Field {
 
         this.TMinoPool = new TetrominoPool();
 
+        this.LineDeleteInterval = 0;
+        this.StartInterval = this.LineDeleteInterval * 2;
+        this.InverseInterval = 0;
+
         this.init();
     }
 
@@ -81,8 +85,16 @@ class Field {
         return this.ControllSwitch;
     }
 
-    timeInversion(tinversionSwitch) {
-        this.TInversionSwitch = tinversionSwitch;
+    timeInversion() {
+        switch (this.TInversionSwitch) {
+            case 0:
+                this.TInversionSwitch = 1;
+                break;
+
+            case 1:
+                this.TInversionSwitch = 0;
+                break;
+        }
     }
 
     setTetromino(tetromino) {
@@ -184,10 +196,26 @@ class Field {
         }
     }
 
-    spaceInversion(spaceInversionSwitch) {
-        this.PrevSInversionSwitch = this.SInversionSwitch;
+    start() {
+        this.FieldTimer.start();
+    }
 
-        this.SInversionSwitch = spaceInversionSwitch;
+    stop() {
+        this.FieldTimer.stop();
+    }
+
+    spaceInversion() {
+        switch (this.SInversionSwitch) {
+            case 0:
+                this.SInversionSwitch = 1;
+                break;
+
+            case 1:
+                this.SInversionSwitch = 0;
+                break;
+        }
+
+        this.PrevSInversionSwitch = this.SInversionSwitch;
 
         if (this.SInversionSwitch == 0) {
             this.CurrentBufferPointer = this.Buffer;
@@ -225,15 +253,12 @@ class Field {
                         if (owner.CurrentTetromino != null) {
                             if (owner.CurrentTetromino.inverseTetromino() == 1) {
                                 if (owner.PrevTetromino == null) {
-                                    owner.timeInversion(0);
+                                    owner.timeInversion();
                                 }
                                 else {
-                                    owner.inverseLines();
                                     owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
-                                    owner.FieldTimer.sleep(0).then(() => {
-                                        owner.inverseSetTetromino();
-
-                                    })
+                                    owner.inverseLines();
+                                    owner.inverseSetTetromino();
                                 }
                             }
                         }
@@ -300,7 +325,7 @@ class Field {
     }
 
     moveStateCheck(index) {
-        if (this.CurrentTetromino == null) {
+        if (this.CurrentTetromino == null || this.ControllSwitch == 1) {
             return;
         }
 
@@ -329,7 +354,7 @@ class Field {
                 this.ControllSwitch = 1;
 
                 if (this.TInversionSwitch != 1) {
-                    this.FieldTimer.sleep(0).then(() => {
+                    this.FieldTimer.sleep(this.StartInterval).then(() => {
                         this.ControllSwitch = 0;
                         this.setTetromino(this.TMinoPool.shiftTetromino());
                     })
@@ -343,7 +368,7 @@ class Field {
         if (this.CurrentTetromino == null) {
             return;
         }
-        
+
         this.CurrentTetromino.rotate(dir)
 
         var state = this.checkTetromino([0, 0]);
@@ -360,7 +385,7 @@ class Field {
     }
 
     inverseLines() {
-        this.FieldTimer.sleep(0).then(() => {
+        this.FieldTimer.sleep(this.InverseInterval).then(() => {
             for (var i = this.FieldHeight; i >= 0; i--) {
                 if (this.PrevDeleteChecker[i] > 0) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
@@ -392,7 +417,7 @@ class Field {
             }
         })
 
-        this.FieldTimer.sleep(0).then(() => {
+        this.FieldTimer.sleep(this.InverseInterval).then(() => {
             for (var i = 1; i < this.FieldHeight + 1; i++) {
                 if (this.PrevLineChecker[i]) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
@@ -474,7 +499,7 @@ class Field {
 
         var deleteVar = 0;
 
-        this.FieldTimer.sleep(0).then(() => {
+        this.FieldTimer.sleep(this.LineDeleteInterval).then(() => {
             for (var i = 1; i < this.FieldHeight + 1; i++) {
                 if (this.PrevLineChecker[i] > 0) {
                     this.PrevLineChecker[i] = 0;
@@ -525,7 +550,7 @@ class Field {
             }
         })
 
-        this.FieldTimer.sleep(0).then(() => {
+        this.FieldTimer.sleep(this.LineDeleteInterval).then(() => {
             for (var i = 1; i < this.FieldHeight + 1; i++) {
                 this.PrevDeleteChecker[i] = 0;
                 if (this.DeleteChecker[i] > 0) {
