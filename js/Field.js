@@ -57,9 +57,10 @@ class Field {
 
         this.TMinoPool = new TetrominoPool();
 
-        this.LineDeleteInterval = 0;
-        this.StartInterval = this.LineDeleteInterval * 2;
-        this.InverseInterval = 0;
+        this.LineDeleteInterval = 250;
+        this.TetrominoStartInterval = this.LineDeleteInterval * 2;
+        this.LineInverseInterval = 50;
+        this.TetrominoInverseInterval = this.LineInverseInterval * 2;
 
         this.init();
     }
@@ -129,6 +130,7 @@ class Field {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.PrevTetromino.getBaseCubes(i);
 
+                this.FieldMesh.remove(baseCube.Mesh);
                 this.TetrominoMesh.add(baseCube.Mesh);
             }
         }
@@ -258,7 +260,9 @@ class Field {
                                 else {
                                     owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
                                     owner.inverseLines();
-                                    owner.inverseSetTetromino();
+                                    owner.FieldTimer.sleep(owner.TetrominoInverseInterval).then(() => {
+                                        owner.inverseSetTetromino();
+                                    })
                                 }
                             }
                         }
@@ -354,7 +358,7 @@ class Field {
                 this.ControllSwitch = 1;
 
                 if (this.TInversionSwitch != 1) {
-                    this.FieldTimer.sleep(this.StartInterval).then(() => {
+                    this.FieldTimer.sleep(this.TetrominoStartInterval).then(() => {
                         this.ControllSwitch = 0;
                         this.setTetromino(this.TMinoPool.shiftTetromino());
                     })
@@ -385,7 +389,7 @@ class Field {
     }
 
     inverseLines() {
-        this.FieldTimer.sleep(this.InverseInterval).then(() => {
+        this.FieldTimer.sleep(this.LineInverseInterval).then(() => {
             for (var i = this.FieldHeight; i >= 0; i--) {
                 if (this.PrevDeleteChecker[i] > 0) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
@@ -417,7 +421,7 @@ class Field {
             }
         })
 
-        this.FieldTimer.sleep(this.InverseInterval).then(() => {
+        this.FieldTimer.sleep(this.LineInverseInterval).then(() => {
             for (var i = 1; i < this.FieldHeight + 1; i++) {
                 if (this.PrevLineChecker[i]) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
@@ -439,13 +443,13 @@ class Field {
             }
 
             for (var i = 0; i < 4; i++) {
-                var baseCube = this.CurrentTetromino.getBaseCubes(i);
+                var baseCube = this.PrevTetromino.getBaseCubes(i);
                 var index = baseCube.getIndex();
 
                 var x = index[0];
                 var y = index[1];
 
-                this.FieldMesh.remove(baseCube.Mesh);
+                // this.FieldMesh.remove(baseCube.Mesh);
 
                 this.CurrentBufferPointer[y][x] = 0;
                 this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = 0;
