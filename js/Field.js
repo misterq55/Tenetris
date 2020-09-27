@@ -129,7 +129,6 @@ class Field {
         if (this.PrevTetromino != null) {
             for (var i = 0; i < 4; i++) {
                 var baseCube = this.PrevTetromino.getBaseCubes(i);
-
                 this.FieldMesh.remove(baseCube.Mesh);
 
                 var index = baseCube.getIndex();
@@ -143,7 +142,7 @@ class Field {
     
                     // baseCube.setRotation(this.SInversionSwitch);
                 }
-                
+
                 this.TetrominoMesh.add(baseCube.Mesh);
             }
         }
@@ -528,7 +527,7 @@ class Field {
 
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
-                            index[1] -= this.DeleteChecker[i];
+                            index[1] = y - this.DeleteChecker[i];
 
                             this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
                             this.CurrentBufferPointer[i][j] = 0;
@@ -618,6 +617,8 @@ class Field {
                 if (this.SInversionSwitch == 1) {
                     x = this.FieldWidth - x + 1;
                 }
+
+                // this.FieldMesh.remove(baseCube.Mesh);
 
                 this.CurrentBufferPointer[y][x] = 0;
                 this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = 0;

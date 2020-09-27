@@ -1,8 +1,9 @@
 class BaseCube {
     constructor(cubeTexture, index) {
         this.Position = new THREE.Vector3(0, 0, 0);
+        this.CubeTexture = cubeTexture;
         var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var tex = new THREE.MeshLambertMaterial({map: cubeTexture});
+        var tex = new THREE.MeshLambertMaterial({map: this.CubeTexture});
         this.Mesh = new THREE.Mesh(geometry, tex);
         this.Type = -1;
         this.setIndex(index)
@@ -10,6 +11,10 @@ class BaseCube {
 
     setType(type) {
         this.Type = type;
+    }
+
+    getCubeTexture() {
+        return this.CubeTexture;
     }
 
     getType() {
