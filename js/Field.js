@@ -583,7 +583,7 @@ class Field {
         })
 
         this.FieldTimer.sleep(this.LineInverseInterval).then(() => {
-            for (var i = 1; i < this.FieldHeight + 1; i++) {
+            for (var i = this.FieldHeight; i >= 0; i--) {
                 if (this.PrevLineChecker[i]) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
                         var x = j;
