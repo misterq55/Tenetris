@@ -528,20 +528,18 @@ class Field {
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
 
-                            if (index[1] == y) {
-                                index[1] -= this.DeleteChecker[i];
+                            index[1] = y - this.DeleteChecker[i];
 
-                                this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
-                                this.CurrentBufferPointer[i][j] = 0;
+                            this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
+                            this.CurrentBufferPointer[i][j] = 0;
 
-                                this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
-                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
+                            this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
+                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
-                                baseCube.setIndex(index);
+                            baseCube.setIndex(index);
 
-                                this.BaseCubes[y - this.DeleteChecker[i]][x] = baseCube;
-                                this.BaseCubes[y][x] = null;
-                            }
+                            this.BaseCubes[y - this.DeleteChecker[i]][x] = baseCube;
+                            this.BaseCubes[y][x] = null;
                         }
                     }
                 }
@@ -566,20 +564,18 @@ class Field {
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
 
-                            if (index[1] == y) {
-                                index[1] += this.PrevDeleteChecker[i];
+                            index[1] = y + this.PrevDeleteChecker[i];
 
-                                this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
-                                this.CurrentBufferPointer[i][j] = 0;
+                            this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
+                            this.CurrentBufferPointer[i][j] = 0;
 
-                                this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
-                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
+                            this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
+                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
-                                baseCube.setIndex(index);
+                            baseCube.setIndex(index);
 
-                                this.BaseCubes[y + this.PrevDeleteChecker[i]][x] = baseCube;
-                                this.BaseCubes[y][x] = null;
-                            }
+                            this.BaseCubes[y + this.PrevDeleteChecker[i]][x] = baseCube;
+                            this.BaseCubes[y][x] = null;
                         }
                     }
                 }
