@@ -139,7 +139,7 @@ class Field {
                     x = this.FieldWidth - x + 1;
                     index[0] = x;
                     baseCube.setIndex(index);
-    
+
                     // baseCube.setRotation(this.SInversionSwitch);
                 }
 
@@ -527,18 +527,21 @@ class Field {
 
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
-                            index[1] = y - this.DeleteChecker[i];
 
-                            this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
-                            this.CurrentBufferPointer[i][j] = 0;
+                            if (index[1] == y) {
+                                index[1] -= this.DeleteChecker[i];
 
-                            this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
-                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
+                                this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
+                                this.CurrentBufferPointer[i][j] = 0;
 
-                            baseCube.setIndex(index);
+                                this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
+                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
-                            this.BaseCubes[y - this.DeleteChecker[i]][x] = baseCube;
-                            this.BaseCubes[y][x] = null;
+                                baseCube.setIndex(index);
+
+                                this.BaseCubes[y - this.DeleteChecker[i]][x] = baseCube;
+                                this.BaseCubes[y][x] = null;
+                            }
                         }
                     }
                 }
@@ -562,18 +565,21 @@ class Field {
 
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
-                            index[1] += this.PrevDeleteChecker[i];
 
-                            this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
-                            this.CurrentBufferPointer[i][j] = 0;
+                            if (index[1] == y) {
+                                index[1] += this.PrevDeleteChecker[i];
 
-                            this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
-                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
+                                this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
+                                this.CurrentBufferPointer[i][j] = 0;
 
-                            baseCube.setIndex(index);
+                                this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
+                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
-                            this.BaseCubes[y + this.PrevDeleteChecker[i]][x] = baseCube;
-                            this.BaseCubes[y][x] = null;
+                                baseCube.setIndex(index);
+
+                                this.BaseCubes[y + this.PrevDeleteChecker[i]][x] = baseCube;
+                                this.BaseCubes[y][x] = null;
+                            }
                         }
                     }
                 }
@@ -617,8 +623,6 @@ class Field {
                 if (this.SInversionSwitch == 1) {
                     x = this.FieldWidth - x + 1;
                 }
-
-                // this.FieldMesh.remove(baseCube.Mesh);
 
                 this.CurrentBufferPointer[y][x] = 0;
                 this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = 0;
