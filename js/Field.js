@@ -272,6 +272,7 @@ class Field {
                             if (owner.CurrentTetromino.inverseTetromino() == 1) {
                                 if (owner.PrevTetromino == null) {
                                     owner.timeInversion();
+                                    owner.CurrentTetromino.initIndex();
                                 }
                                 else {
                                     owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
@@ -527,8 +528,6 @@ class Field {
 
                         if (baseCube != null) {
                             var index = [x, y - this.DeleteChecker[i]];
-                            // var index = baseCube.getIndex();
-                            // index[1] = y - this.PrevDeleteChecker[i];
 
                             this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
                             this.CurrentBufferPointer[i][j] = 0;
@@ -563,8 +562,6 @@ class Field {
 
                         if (baseCube != null) {
                             var index = [x, y + this.PrevDeleteChecker[i]];
-                            // var index = baseCube.getIndex();
-                            // index[1] = y + this.PrevDeleteChecker[i];
 
                             this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
                             this.CurrentBufferPointer[i][j] = 0;

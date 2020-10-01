@@ -41,10 +41,10 @@ class BaseCube {
 }
 
 class Tetromino {
-    static StartIndex = null;
+    static BasicIndexArr = null;
 
     constructor(cubeTexture) {
-        this.BaseIndex = Tetromino.StartIndex
+        this.BaseIndex = Tetromino.StartIndex;
         this.Buffer = new Array(4);
         this.Mesh = new THREE.Group();
         this.BaseCubes = new Array(4);
@@ -57,6 +57,7 @@ class Tetromino {
 
         this.MoveIndexArray = [];
 
+        this.BasicIndexArr = new Array(4);
         this.StartIndex = new Array(4);
 
         this.SpaceInversionType = 0;
@@ -86,7 +87,7 @@ class Tetromino {
         for (var i = 0; i < 4; i++) {
 
             this.PreMoveIndex[i] = [this.IndexArr[i][0], this.IndexArr[i][1]];
-            this.StartIndex[i] = [this.IndexArr[i][0], this.IndexArr[i][1]];
+            this.BasicIndexArr[i] = [this.IndexArr[i][0], this.IndexArr[i][1]];
 
             var newX = parseInt(this.BaseIndex[0], 10) + parseInt(this.IndexArr[i][0], 10);
             var newY = parseInt(this.BaseIndex[1], 10) + parseInt(this.IndexArr[i][1], 10);
@@ -98,6 +99,8 @@ class Tetromino {
 
             moveIndex[i] = [newX, newY];
 
+            this.StartIndex[i] = [newX, newY];
+
             var basecube = new BaseCube(this.CubeTexture, index)
             basecube.setType(this.TetrominoType);
             this.BaseCubes[i] = basecube
@@ -108,6 +111,12 @@ class Tetromino {
     
     getBaseCubes(idx) {
         return this.BaseCubes[idx];
+    }
+    
+    initIndex() {
+        for (var i = 0; i < 4; i++) {
+            this.BaseCubes[i].setIndex(this.StartIndex[i]);
+        }
     }
 
     setIndex(index) {
@@ -255,6 +264,11 @@ class Tetromino {
     }
 
     applyIndex() {
+        this.saveMoveIndex();
+        this.setIndex(this.PreMoveIndex);
+    }
+    
+    saveMoveIndex() {
         var moveIndex = new Array(4);
         
         for (var i = 0; i < 4; i++) {
@@ -262,7 +276,6 @@ class Tetromino {
         }
 
         this.MoveIndexArray.push(moveIndex);
-        this.setIndex(this.PreMoveIndex)
     }
 
     inverseTetromino() {
@@ -272,8 +285,8 @@ class Tetromino {
             var moveIndex = new Array(4);
             
             for (var i = 0; i < 4; i++) {
-                this.IndexArr[i][0] = this.StartIndex[i][0];
-                this.IndexArr[i][1] = this.StartIndex[i][1];
+                this.IndexArr[i][0] = this.BasicIndexArr[i][0];
+                this.IndexArr[i][1] = this.BasicIndexArr[i][1];
 
                 var newX = parseInt(this.BaseIndex[0], 10) + parseInt(this.IndexArr[i][0], 10);
                 var newY = parseInt(this.BaseIndex[1], 10) + parseInt(this.IndexArr[i][1], 10);
