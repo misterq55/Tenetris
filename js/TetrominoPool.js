@@ -10,7 +10,7 @@ class TetrominoBag {
             // this.Bag.push(this.createTetromino(1, TextureManager.getInstance().Dictionary[cubeTextureName]));
         }
 
-        this.shuffle();
+        // this.shuffle();
 
         this.Size = this.Bag.length;
     }
@@ -19,25 +19,25 @@ class TetrominoBag {
         var tetromino = null;
 
         switch (idx) {
-            case 0:
+            case 2:
                 tetromino = new IMino(texture);
                 break;
-            case 1:
+            case 5:
                 tetromino = new TMino(texture);
                 break;
-            case 2:
+            case 4:
                 tetromino = new LMino(texture);
                 break;
-            case 3:
+            case 6:
                 tetromino = new SMino(texture);
                 break;
-            case 4:
+            case 0:
                 tetromino = new OMino(texture);
                 break;
-            case 5:
+            case 1:
                 tetromino = new ZMino(texture);
                 break;
-            case 6:
+            case 3:
                 tetromino = new JMino(texture);
                 break;
         }

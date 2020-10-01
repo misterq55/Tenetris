@@ -2,7 +2,7 @@ class OptionManager {
     static Instance = null;
 
     constructor() {
-        this.MinoTextureDictionary = ["sky", "purple", "orange", "green", "yellow", "red", "blue", "grey"];
+        this.MinoTextureDictionary = ["yellow", "red", "sky", "blue", "orange", "purple", "green", "grey"];
     }
 
     static getInstance() {

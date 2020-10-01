@@ -81,6 +81,7 @@ class Tetromino {
     setBaseCubes() {
         this.PreMoveIndex = new Array(4);
         var moveIndex = new Array(4);
+        this.BuiltIndex = new Array(4);
 
         for (var i = 0; i < 4; i++) {
 
@@ -147,6 +148,10 @@ class Tetromino {
 
     getPreMoveIndex() {
         return this.PreMoveIndex;
+    }
+
+    getBuiltIndex() {
+        return this.BuiltIndex;
     }
 
     rotate(dir) {
