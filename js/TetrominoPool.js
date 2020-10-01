@@ -10,7 +10,7 @@ class TetrominoBag {
             // this.Bag.push(this.createTetromino(1, TextureManager.getInstance().Dictionary[cubeTextureName]));
         }
 
-        // this.shuffle();
+        this.shuffle();
 
         this.Size = this.Bag.length;
     }
