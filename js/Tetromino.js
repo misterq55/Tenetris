@@ -32,12 +32,6 @@ class BaseCube {
     getIndex() {
         return this.Index;
     }
-
-    setRotation(dir) {
-        if (dir == 1) {
-            this.Mesh.rotation.set(0, Math.PI, 0);
-        }
-    }
 }
 
 class Tetromino {
