@@ -65,8 +65,55 @@ class Field {
         this.init();
     }
 
-    start() {
-        this.FieldTimer.start();
+    init() {
+        this.BaseCubes = new Array(this.FieldHeight + 2);
+        this.DeletedBaseCubes = new Array(this.FieldHeight + 2);
+
+        this.Buffer = new Array(this.FieldHeight + 2);
+        this.ReverseBuffer = new Array(this.FieldHeight + 2);
+
+        this.CurrentBufferPointer = this.Buffer;
+        this.AnotherBufferPointer = this.ReverseBuffer;
+
+        this.LineChecker = new Array(this.FieldHeight + 2);
+        this.DeleteChecker = new Array(this.FieldHeight + 2);
+
+        this.PrevLineChecker = new Array(this.FieldHeight + 2);
+        this.PrevDeleteChecker = new Array(this.FieldHeight + 2);
+
+        let texture = TextureManager.getInstance().Dictionary["grey"];
+
+        this.setTetromino(this.TMinoPool.shiftTetromino());
+
+        for (var i = 0; i < this.FieldHeight + 2; i++) {
+            this.Buffer[i] = new Array(this.FieldWidth + 2);
+            this.ReverseBuffer[i] = new Array(this.FieldWidth + 2);
+            this.BaseCubes[i] = new Array(this.FieldWidth + 2);
+            this.DeletedBaseCubes[i] = new Array(this.FieldWidth + 2);
+            this.LineChecker[i] = 0;
+            this.DeleteChecker[i] = 0;
+            this.PrevLineChecker[i] = 0;
+            this.PrevDeleteChecker[i] = 0;
+
+            this.HeightBuffer[i] = 0;
+
+            for (var j = 0; j < this.FieldWidth + 2; j++) {
+                this.Buffer[i][j] = 0;
+                this.ReverseBuffer[i][j] = 0;
+
+                if (i == 0 || i == this.FieldHeight + 1 ||
+                    j == 0 || j == this.FieldWidth + 1) {
+
+                    var baseCube = new BaseCube(texture, [j, i]);
+
+                    this.EdgeMesh.add(baseCube.Mesh);
+                    if (i != this.FieldHeight + 1) {
+                        this.Buffer[i][j] = -1;
+                        this.ReverseBuffer[i][j] = -1;
+                    }
+                }
+            }
+        }
     }
 
     setPosition(pos) {
@@ -135,12 +182,9 @@ class Field {
                 var x = index[0];
 
                 if (this.SInversionSwitch == 1) {
-
                     x = this.FieldWidth - x + 1;
                     index[0] = x;
                     baseCube.setIndex(index);
-
-                    // baseCube.setRotation(this.SInversionSwitch);
                 }
 
                 this.TetrominoMesh.add(baseCube.Mesh);
@@ -157,57 +201,6 @@ class Field {
 
         this.CurrentTetromino = this.PrevTetromino;
         this.PrevTetromino = null;
-    }
-
-    init() {
-        this.BaseCubes = new Array(this.FieldHeight + 2);
-        this.DeletedBaseCubes = new Array(this.FieldHeight + 2);
-
-        this.Buffer = new Array(this.FieldHeight + 2);
-        this.ReverseBuffer = new Array(this.FieldHeight + 2);
-
-        this.CurrentBufferPointer = this.Buffer;
-        this.AnotherBufferPointer = this.ReverseBuffer;
-
-        this.LineChecker = new Array(this.FieldHeight + 2);
-        this.DeleteChecker = new Array(this.FieldHeight + 2);
-
-        this.PrevLineChecker = new Array(this.FieldHeight + 2);
-        this.PrevDeleteChecker = new Array(this.FieldHeight + 2);
-
-        let texture = TextureManager.getInstance().Dictionary["grey"];
-
-        this.setTetromino(this.TMinoPool.shiftTetromino());
-
-        for (var i = 0; i < this.FieldHeight + 2; i++) {
-            this.Buffer[i] = new Array(this.FieldWidth + 2);
-            this.ReverseBuffer[i] = new Array(this.FieldWidth + 2);
-            this.BaseCubes[i] = new Array(this.FieldWidth + 2);
-            this.DeletedBaseCubes[i] = new Array(this.FieldWidth + 2);
-            this.LineChecker[i] = 0;
-            this.DeleteChecker[i] = 0;
-            this.PrevLineChecker[i] = 0;
-            this.PrevDeleteChecker[i] = 0;
-
-            this.HeightBuffer[i] = 0;
-
-            for (var j = 0; j < this.FieldWidth + 2; j++) {
-                this.Buffer[i][j] = 0;
-                this.ReverseBuffer[i][j] = 0;
-
-                if (i == 0 || i == this.FieldHeight + 1 ||
-                    j == 0 || j == this.FieldWidth + 1) {
-
-                    var baseCube = new BaseCube(texture, [j, i]);
-
-                    this.EdgeMesh.add(baseCube.Mesh);
-                    if (i != this.FieldHeight + 1) {
-                        this.Buffer[i][j] = -1;
-                        this.ReverseBuffer[i][j] = -1;
-                    }
-                }
-            }
-        }
     }
 
     start() {
@@ -249,7 +242,7 @@ class Field {
 
     update(index) {
         this.rotateField();
-        
+
         if (this.RotateStatus != 0) {
             return;
         }
@@ -276,6 +269,7 @@ class Field {
                                     }
 
                                     owner.timeInversion();
+                                    owner.CurrentTetromino.initIndex();
                                 }
                                 else {
                                     owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
@@ -415,6 +409,8 @@ class Field {
             var x = tminoBuffer[i][0];
             var y = tminoBuffer[i][1];
 
+            this.CurrentTetromino.setBuiltIndex(i, [x, y]);
+
             this.CurrentBufferPointer[y][x] = this.CurrentTetromino.getTetrominoType();
             this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = this.CurrentTetromino.getTetrominoType();
 
@@ -536,6 +532,7 @@ class Field {
                 this.DeleteChecker[i] = 0;
             }
         })
+
     }
 
     inverseLines() {
@@ -546,7 +543,7 @@ class Field {
                         var x = j;
                         var y = i;
 
-                        if (this.SInversionSwitch == 1) {
+                        if (this.PrevTetromino.getSpaceInversionType() == 1) {
                             x = this.FieldWidth - x + 1;
                         }
 
@@ -561,14 +558,15 @@ class Field {
                                 var prevCurrentPointer = 0;
                                 var prevAnotherPointer = 0;
 
-                                if (this.SInversionSwitch == this.CurrentTetromino.getSpaceInversionType()) {
+                                // if (this.SInversionSwitch == this.PrevTetromino.getSpaceInversionType()) 
+                                {
                                     prevCurrentPointer = this.CurrentBufferPointer[i][j];
                                     prevAnotherPointer = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
                                 }
-                                else {
-                                    prevCurrentPointer = this.AnotherBufferPointer[i][j];
-                                    prevAnotherPointer = this.CurrentBufferPointer[i][this.FieldWidth - j + 1];
-                                }
+                                // else {
+                                //     prevCurrentPointer = this.AnotherBufferPointer[i][j];
+                                //     prevAnotherPointer = this.CurrentBufferPointer[i][this.FieldWidth - j + 1];
+                                // }
 
                                 this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = prevCurrentPointer;
                                 this.CurrentBufferPointer[i][j] = 0;
@@ -589,6 +587,7 @@ class Field {
             }
         })
 
+
         this.FieldTimer.sleep(this.LineInverseInterval).then(() => {
             for (var i = this.FieldHeight; i >= 0; i--) {
                 if (this.PrevLineChecker[i]) {
@@ -596,7 +595,7 @@ class Field {
                         var x = j;
                         var y = i;
 
-                        if (this.SInversionSwitch == 1) {
+                        if (this.PrevTetromino.getSpaceInversionType() == 1) {
                             x = this.FieldWidth - x + 1;
                         }
 
@@ -614,21 +613,20 @@ class Field {
                 }
             }
 
+            var tminoBuffer = this.PrevTetromino.getBuiltIndex();
+
             for (var i = 0; i < 4; i++) {
-                var baseCube = this.PrevTetromino.getBaseCubes(i);
-                var index = baseCube.getIndex();
+                var x = tminoBuffer[i][0];
+                var y = tminoBuffer[i][1];
 
-                var x = index[0];
-                var y = index[1];
+                this.CurrentBufferPointer[y][x] = 0;
+                this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = 0;
 
-                if (this.PrevTetromino.getSpaceInversionType() == 0) {
-                    this.Buffer[y][x] = 0;
-                    this.ReverseBuffer[y][this.FieldWidth - x + 1] = 0;
+                if (this.PrevTetromino.getSpaceInversionType() == 1) {
+                    x = this.FieldWidth - x + 1;
                 }
-                else {
-                    this.Buffer[y][this.FieldWidth - x + 1] = 0;
-                    this.ReverseBuffer[y][x] = 0;
-                }
+
+                this.BaseCubes[y][x] = null;
             }
         })
     }

@@ -153,6 +153,10 @@ class Tetromino {
         return this.PreMoveIndex;
     }
 
+    setBuiltIndex(idx, value) {
+        this.BuiltIndex[idx] = value;
+    }
+
     getBuiltIndex() {
         return this.BuiltIndex;
     }
