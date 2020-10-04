@@ -1,21 +1,35 @@
 class Field {
     constructor() {
         this.FieldWidth = 10;
-        this.FieldHeight = 22;
+        this.FieldHeight = 24;
+
+        this.WidthInterval = 5.5;
+        this.HeightInterval = 2;
+        this.BoarderLine = 0;
 
         this.FieldMesh = new THREE.Group();
-        this.FieldMesh.position.set(-5.5, 0, 0);
+        this.FieldMesh.position.set(-this.WidthInterval, 0, 0);
 
         this.EdgeMesh = new THREE.Group();
         this.EdgeMesh.position.set(0, 0, 0);
 
         this.CenterMesh = new THREE.Group();
         this.CenterMesh.add(this.FieldMesh);
-        this.CenterMesh.position.set(5.5, 0, 0);
+        this.CenterMesh.position.set(this.WidthInterval, 0, 0);
+
+        var geometry = new THREE.PlaneGeometry(this.FieldWidth + this.BoarderLine, this.FieldHeight + this.BoarderLine, this.FieldWidth / 2, this.FieldHeight / 2);
+        var tex = new THREE.MeshLambertMaterial({map: TextureManager.getInstance().Dictionary["backGround"]});
+
+        this.BackgroundMesh = new THREE.Mesh(geometry, tex);
+        this.BackgroundMesh.position.set(this.WidthInterval, (this.FieldHeight + 1) / 2, 0);
+
+        this.BackgroundMesh.material.transparent = true;
+        this.BackgroundMesh.material.opacity = 0.35;
 
         this.Mesh = new THREE.Group();
         this.Mesh.add(this.CenterMesh);
         this.Mesh.add(this.EdgeMesh);
+        this.Mesh.add(this.BackgroundMesh);
 
         this.TetrominoMesh = new THREE.Group();
         this.Mesh.add(this.TetrominoMesh);
@@ -33,6 +47,13 @@ class Field {
 
         this.CurrentTetromino = null;
         this.PrevTetromino = null;
+        this.GuideTetrmoino = null; // new GuideMino(TextureManager.getInstance().Dictionary["base"]);
+        
+        // for (var i = 0; i < 4; i++) {
+        //     var baseCube = this.GuideTetrmoino.getBaseCubes(i);
+
+        //     this.TetrominoMesh.add(baseCube.Mesh);
+        // }
 
         this.LineChecker = null;
         this.DeleteChecker = null;
@@ -53,7 +74,7 @@ class Field {
 
         this.HeightBuffer = new Array(this.FieldWidth + 2);
 
-        Tetromino.StartIndex = [4, 20];
+        Tetromino.StartIndex = [4, 22];
 
         this.TMinoPool = new TetrominoPool();
 
@@ -81,7 +102,7 @@ class Field {
         this.PrevLineChecker = new Array(this.FieldHeight + 2);
         this.PrevDeleteChecker = new Array(this.FieldHeight + 2);
 
-        let texture = TextureManager.getInstance().Dictionary["grey"];
+        // let texture = TextureManager.getInstance().Dictionary["grey"];
 
         this.setTetromino(this.TMinoPool.shiftTetromino());
 
@@ -104,9 +125,9 @@ class Field {
                 if (i == 0 || i == this.FieldHeight + 1 ||
                     j == 0 || j == this.FieldWidth + 1) {
 
-                    var baseCube = new BaseCube(texture, [j, i]);
+                    // var baseCube = new BaseCube(texture, [j, i]);
 
-                    this.EdgeMesh.add(baseCube.Mesh);
+                    // this.EdgeMesh.add(baseCube.Mesh);
                     if (i != this.FieldHeight + 1) {
                         this.Buffer[i][j] = -1;
                         this.ReverseBuffer[i][j] = -1;
@@ -118,7 +139,7 @@ class Field {
 
     setPosition(pos) {
         Tetromino.StartIndex[0] += pos.x;
-        this.Mesh.position.set(pos.x, pos.y, pos.z);
+        this.Mesh.position.set(pos.x, pos.y - this.HeightInterval, pos.z);
     }
 
     setScale(scale) {
@@ -162,10 +183,15 @@ class Field {
             }
         }
 
+        if (this.PrevTetromino != null) {
+            this.PrevTetromino.setGuideTetromino(null);
+        }
+
         this.PrevTetromino = this.CurrentTetromino;
         this.CurrentTetromino = tetromino;
 
         this.CurrentTetromino.setSpaceInversionType(this.SInversionSwitch);
+        this.CurrentTetromino.setGuideTetromino(this.GuideTetrmoino);
     }
 
     getTetromino() {
@@ -199,7 +225,9 @@ class Field {
             }
         }
 
+        this.CurrentTetromino.setGuideTetromino(null);
         this.CurrentTetromino = this.PrevTetromino;
+        this.CurrentTetromino.setGuideTetromino(this.GuideTetrmoino);
         this.PrevTetromino = null;
     }
 

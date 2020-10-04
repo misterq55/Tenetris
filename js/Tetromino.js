@@ -56,6 +56,8 @@ class Tetromino {
 
         this.SpaceInversionType = 0;
 
+        this.GuideTeromino = null;
+
         for (var i = 0; i < this.Buffer.length; i++) {
             this.Buffer[i] = new Array(4);
         }
@@ -105,6 +107,25 @@ class Tetromino {
     
     getBaseCubes(idx) {
         return this.BaseCubes[idx];
+    }
+
+    setGuideTetromino(guideTetromino) {
+        this.GuideTeromino = guideTetromino;
+
+        if (this.GuideTeromino != null) {
+            this.applyGuideTetronimo();
+        }
+    }
+
+    applyGuideTetronimo() {
+        var tempIndex = new Array(4);
+        for (var i = 0; i < 4; i++) {
+            tempIndex[i] = [this.PreMoveIndex[i][0], this.PreMoveIndex[i][1] - 3];
+        }
+
+        if (this.GuideTeromino != null) {
+            this.GuideTeromino.setIndex(tempIndex);
+        }
     }
     
     initIndex() {
@@ -264,8 +285,12 @@ class Tetromino {
     applyIndex() {
         this.saveMoveIndex();
         this.setIndex(this.PreMoveIndex);
+
+        if (this.GuideTeromino != null) {
+            this.applyGuideTetronimo();
+        }
     }
-    
+
     saveMoveIndex() {
         var moveIndex = new Array(4);
         
@@ -422,13 +447,13 @@ class OMino extends Tetromino {
 }
 
 class JMino extends Tetromino {
-    constructor(cubeTextureName) {
-        super(cubeTextureName)
+    constructor(cubeTexture) {
+        super(cubeTexture)
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [0, 2]]
 
         this.TetrominoType = 6;
 
-        super.setBaseCubes(cubeTextureName);
+        super.setBaseCubes();
     }
 
     rotate(dir) {
@@ -437,13 +462,13 @@ class JMino extends Tetromino {
 }
 
 class LMino extends Tetromino {
-    constructor(cubeTextureName) {
-        super(cubeTextureName)
+    constructor(cubeTexture) {
+        super(cubeTexture)
         this.IndexArr = [[0, 1], [1, 1], [2, 1], [2, 2]]
 
         this.TetrominoType = 7;
 
-        super.setBaseCubes(cubeTextureName);
+        super.setBaseCubes();
     }
 
     rotate(dir) {
@@ -452,28 +477,11 @@ class LMino extends Tetromino {
 }
 
 class GuideMino extends Tetromino {
-    constructor(cubeTextureName) {
-        super(cubeTextureName)
-
-        super.setBaseCubes(cubeTextureName);
-    }
-
-    resetBaseCubes(newIndexArr) {
-        this.IndexArr = newIndexArr;
-
+    constructor(cubeTexture) {
+        super(cubeTexture)
+        
         for (var i = 0; i < 4; i++) {
-
-            this.PreMoveIndex[i] = [this.IndexArr[i][0], this.IndexArr[i][1]];
-
-            var newX = parseInt(this.BaseIndex[0], 10) + parseInt(this.IndexArr[i][0], 10);
-            var newY = parseInt(this.BaseIndex[1], 10) + parseInt(this.IndexArr[i][1], 10);
-
-            var index = [newX, newY]
-
-            this.PreMoveIndex[i][0] = index[0];
-            this.PreMoveIndex[i][1] = index[1];
-
-            this.BaseCubes[i].setIndex(index);
+            this.BaseCubes[i] = new BaseCube(this.CubeTexture, [0, 0]);
         }
     }
 }
