@@ -87,16 +87,14 @@ class Field {
     }
 
     init() {
-        // this.BaseCubes = new Array(this.FieldHeight + 2);
+        this.BaseCubes = new Array(this.FieldHeight + 2);
+        this.DeletedBaseCubes = new Array(this.FieldHeight + 2);
 
         this.Buffer = new Array(this.FieldHeight + 2);
         this.ReverseBuffer = new Array(this.FieldHeight + 2);
 
         this.CurrentBufferPointer = this.Buffer;
         this.AnotherBufferPointer = this.ReverseBuffer;
-
-        this.DeletedBuffer = new Array(this.FieldHeight + 2);
-        this.ReverseDeletedBuffer = new Array(this.FieldHeight + 2);
 
         this.LineChecker = new Array(this.FieldHeight + 2);
         this.DeleteChecker = new Array(this.FieldHeight + 2);
@@ -111,9 +109,8 @@ class Field {
         for (var i = 0; i < this.FieldHeight + 2; i++) {
             this.Buffer[i] = new Array(this.FieldWidth + 2);
             this.ReverseBuffer[i] = new Array(this.FieldWidth + 2);
-            // this.BaseCubes[i] = new Array(this.FieldWidth + 2);
-            this.DeletedBuffer[i] = new Array(this.FieldWidth + 2);
-            this.ReverseDeletedBuffer[i] = new Array(this.FieldWidth + 2);
+            this.BaseCubes[i] = new Array(this.FieldWidth + 2);
+            this.DeletedBaseCubes[i] = new Array(this.FieldWidth + 2);
             this.LineChecker[i] = 0;
             this.DeleteChecker[i] = 0;
             this.PrevLineChecker[i] = 0;
@@ -122,8 +119,8 @@ class Field {
             this.HeightBuffer[i] = 0;
 
             for (var j = 0; j < this.FieldWidth + 2; j++) {
-                this.Buffer[i][j] = [0, null];
-                this.ReverseBuffer[i][j] = [0, null];
+                this.Buffer[i][j] = 0;
+                this.ReverseBuffer[i][j] = 0;
 
                 if (i == 0 || i == this.FieldHeight + 1 ||
                     j == 0 || j == this.FieldWidth + 1) {
@@ -132,8 +129,8 @@ class Field {
 
                     // this.EdgeMesh.add(baseCube.Mesh);
                     if (i != this.FieldHeight + 1) {
-                        this.Buffer[i][j] = [-1, null];
-                        this.ReverseBuffer[i][j] = [-1, null];
+                        this.Buffer[i][j] = -1;
+                        this.ReverseBuffer[i][j] = -1;
                     }
                 }
             }
@@ -362,14 +359,14 @@ class Field {
             var x = preCheckIndex[i][0];
             var y = preCheckIndex[i][1];
 
-            if (this.CurrentBufferPointer[y][x][0] == -1) {
+            if (this.CurrentBufferPointer[y][x] == -1) {
                 if (y == 0) {
                     return 2;
                 }
 
                 return -1;
             }
-            else if (this.CurrentBufferPointer[y][x][0] > 0) {
+            else if (this.CurrentBufferPointer[y][x] > 0) {
                 if (moveIndex[1] < 0) {
                     return 2;
                 }
@@ -448,15 +445,16 @@ class Field {
             var x = tminoBuffer[i][0];
             var y = tminoBuffer[i][1];
 
-            var baseCube = this.CurrentTetromino.getBaseCubes(i);
-
             this.CurrentTetromino.setBuiltIndex(i, [x, y]);
 
-            this.CurrentBufferPointer[y][x] = [this.CurrentTetromino.getTetrominoType(), baseCube];
-            this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = [this.CurrentTetromino.getTetrominoType(), baseCube];
+            this.CurrentBufferPointer[y][x] = this.CurrentTetromino.getTetrominoType();
+            this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = this.CurrentTetromino.getTetrominoType();
+
+            var baseCube = this.CurrentTetromino.getBaseCubes(i);
 
             var index = baseCube.getIndex();
             var tx = index[0];
+            var ty = index[1];
 
             if (this.SInversionSwitch == 1) {
 
@@ -465,7 +463,7 @@ class Field {
                 baseCube.setIndex(index);
             }
 
-            // this.BaseCubes[ty][tx] = baseCube;
+            this.BaseCubes[ty][tx] = baseCube;
 
             this.LineChecker[y]++;
 
@@ -476,7 +474,7 @@ class Field {
             if (this.LineChecker[i] > 0) {
 
                 for (var j = 1; j < this.FieldWidth + 1; j++) {
-                    if (this.CurrentBufferPointer[i][j][0] == 0) {
+                    if (this.CurrentBufferPointer[i][j] == 0) {
                         this.LineChecker[i] = 0;
                         break;
                     }
@@ -491,13 +489,8 @@ class Field {
                 if (this.PrevLineChecker[i] > 0) {
                     this.PrevLineChecker[i] = 0;
 
-                    // for (var j = 1; j < this.FieldWidth + 1; j++) {
-                    //     this.DeletedBuffer[i][j] = null;
-                    // }
-
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
-                        this.DeletedBuffer[i][j] = [0, null];
-                        this.ReverseDeletedBuffer[i][j] = [0, null];
+                        this.DeletedBaseCubes[i][j] = null;
                     }
                 }
 
@@ -505,29 +498,22 @@ class Field {
                     this.PrevLineChecker[i] = this.LineChecker[i];
 
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
-                        // var x = j;
-                        // var y = i;
+                        var x = j;
+                        var y = i;
 
-                        // if (this.SInversionSwitch == 1) {
-                        //     x = this.FieldWidth - x + 1;
-                        // }
+                        if (this.SInversionSwitch == 1) {
+                            x = this.FieldWidth - x + 1;
+                        }
 
-                        // var baseCube = this.BaseCubes[y][x];
-
-                        var baseCube = this.CurrentBufferPointer[i][j][1];
+                        var baseCube = this.BaseCubes[y][x];
 
                         if (baseCube != null) {
 
-                            this.DeletedBuffer[i][j] = this.CurrentBufferPointer[i][j];
-                            this.ReverseDeletedBuffer[i][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
+                            this.CurrentBufferPointer[i][j] = 0;
+                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
-                            this.CurrentBufferPointer[i][j] = [0, null];
-                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = [0, null];
-
-                            // this.BaseCubes[y][x] = null;
-                            // this.DeletedBuffer[y][x] = baseCube;
-
-                            
+                            this.BaseCubes[y][x] = null;
+                            this.DeletedBaseCubes[y][x] = baseCube;
 
                             this.FieldMesh.remove(baseCube.Mesh);
                         }
@@ -548,33 +534,31 @@ class Field {
                 this.PrevDeleteChecker[i] = 0;
                 if (this.DeleteChecker[i] > 0) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
-                        // var x = j;
-                        // var y = i;
+                        var x = j;
+                        var y = i;
 
-                        // if (this.SInversionSwitch == 1) {
-                        //     x = this.FieldWidth - x + 1;
-                        // }
+                        if (this.SInversionSwitch == 1) {
+                            x = this.FieldWidth - x + 1;
+                        }
 
-                        // var baseCube = this.BaseCubes[y][x];
-
-                        var baseCube = this.CurrentBufferPointer[i][j][1];
+                        var baseCube = this.BaseCubes[y][x];
 
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
 
-                            if (index[1] == i) {
+                            if (index[1] == y) {
                                 index[1] -= this.DeleteChecker[i];
 
                                 this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
-                                this.CurrentBufferPointer[i][j] = [0, null];
+                                this.CurrentBufferPointer[i][j] = 0;
 
                                 this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
-                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = [0, null];
+                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
                                 baseCube.setIndex(index);
 
-                                // this.BaseCubes[y - this.DeleteChecker[i]][x] = baseCube;
-                                // this.BaseCubes[y][x] = null;
+                                this.BaseCubes[y - this.DeleteChecker[i]][x] = baseCube;
+                                this.BaseCubes[y][x] = null;
                             }
                         }
                     }
@@ -592,33 +576,31 @@ class Field {
             for (var i = this.FieldHeight; i >= 0; i--) {
                 if (this.PrevDeleteChecker[i] > 0) {
                     for (var j = 1; j < this.FieldWidth + 1; j++) {
-                        // var x = j;
-                        // var y = i;
+                        var x = j;
+                        var y = i;
 
-                        // if (this.SInversionSwitch == 1) {
-                        //     x = this.FieldWidth - x + 1;
-                        // }
+                        if (this.SInversionSwitch == 1) {
+                            x = this.FieldWidth - x + 1;
+                        }
 
-                        // var baseCube = this.BaseCubes[y][x];
+                        var baseCube = this.BaseCubes[y][x];
 
-                        var baseCube = this.CurrentBufferPointer[i][j][1];
-                        
                         if (baseCube != null) {
                             var index = baseCube.getIndex();
 
-                            if (index[1] == i) {
+                            if (index[1] == y) {
                                 index[1] += this.PrevDeleteChecker[i];
 
                                 this.CurrentBufferPointer[i + this.PrevDeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
-                                this.CurrentBufferPointer[i][j] = [0, null];
+                                this.CurrentBufferPointer[i][j] = 0;
 
                                 this.AnotherBufferPointer[i + this.PrevDeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
-                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = [0, null];
+                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = 0;
 
                                 baseCube.setIndex(index);
 
-                                // this.BaseCubes[y + this.PrevDeleteChecker[i]][x] = baseCube;
-                                // this.BaseCubes[y][x] = null;
+                                this.BaseCubes[y + this.PrevDeleteChecker[i]][x] = baseCube;
+                                this.BaseCubes[y][x] = null;
                             }
                         }
                     }
@@ -640,14 +622,14 @@ class Field {
                             x = this.FieldWidth - j + 1;
                         }
 
-                        var baseCube = this.DeletedBuffer[y][x][1];
+                        var baseCube = this.DeletedBaseCubes[y][x];
 
                         if (baseCube != null) {
-                            // this.BaseCubes[y][x] = baseCube;
+                            this.BaseCubes[y][x] = baseCube;
                             this.FieldMesh.add(baseCube.Mesh);
 
-                            this.Buffer[y][x] = [baseCube.getType(), baseCube];
-                            this.ReverseBuffer[y][this.FieldWidth - x + 1] = [baseCube.getType(), baseCube];
+                            this.CurrentBufferPointer[i][j] = baseCube.getType();
+                            this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = baseCube.getType();
                         }
                     }
                 }
@@ -659,18 +641,15 @@ class Field {
                 var x = tminoBuffer[i][0];
                 var y = tminoBuffer[i][1];
 
-                // this.CurrentBufferPointer[y][x] = [0, null];
-                // this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = [0, null];
+                this.CurrentBufferPointer[y][x] = 0;
+                this.AnotherBufferPointer[y][this.FieldWidth - x + 1] = 0;
 
                 if (this.SInversionSwitch == 1) {
                     x = this.FieldWidth - x + 1;
                 }
 
-                this.Buffer[y][x] = [0, null];
-                this.ReverseBuffer[y][this.FieldWidth - x + 1] = [0, null];
-
                 // this.FieldMesh.remove(this.BaseCubes[y][x].Mesh);
-                // this.BaseCubes[y][x] = null;
+                this.BaseCubes[y][x] = null;
             }
         })
     }
