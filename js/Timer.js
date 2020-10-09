@@ -1,5 +1,4 @@
 class Timer {
-    
     constructor() {
         this.TimerId = 0;
         this.TimeCounter = 0

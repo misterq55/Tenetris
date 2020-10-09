@@ -54,7 +54,8 @@ class Tetromino {
         this.BasicIndexArr = new Array(4);
         this.StartIndex = new Array(4);
 
-        this.SpaceInversionType = 0;
+        this.StartSpaceInversionType = 0;
+        this.PlacedSpaceInversionType = 0;
 
         this.GuideTeromino = null;
 
@@ -63,12 +64,20 @@ class Tetromino {
         }
     }
 
-    getSpaceInversionType() {
-        return this.SpaceInversionType;
+    getStartSpaceInversionType() {
+        return this.StartSpaceInversionType;
     }
     
-    setSpaceInversionType(spaceInversionType) {
-        this.SpaceInversionType = spaceInversionType;
+    setStartSpaceInversionType(startSpaceInversionType) {
+        this.StartSpaceInversionType = startSpaceInversionType;
+    }
+
+    getPlacedSpaceInversionType() {
+        return this.PlacedSpaceInversionType;
+    }
+    
+    setPlacedSpaceInversionType(placedSpaceInversionType) {
+        this.PlacedSpaceInversionType = placedSpaceInversionType;
     }
 
     getTetrominoType() {
