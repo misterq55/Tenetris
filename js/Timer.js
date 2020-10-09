@@ -10,6 +10,10 @@ class Timer {
         this.TimeCounter += this.TimeInterval;
     }
 
+    resetTime() {
+        this.TimeCounter = 0;
+    }
+
     setSpeed(speed) {
         this.TimeInterval = speed / 10.0;
     }
@@ -32,8 +36,8 @@ class Timer {
 
     update(owner, timeInterval, callback) {
         if (this.TimeCounter > timeInterval){
-            this.TimeCounter = 0;
             callback(owner);
+            this.TimeCounter = 0;
         }
     }
 }

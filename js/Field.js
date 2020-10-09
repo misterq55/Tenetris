@@ -158,6 +158,7 @@ class Field {
     }
 
     timeInversion() {
+        this.FieldTimer.resetTime();
         switch (this.TInversionSwitch) {
             case 0:
                 this.TInversionSwitch = 1;
@@ -311,7 +312,8 @@ class Field {
                                         owner.spaceInversion();
                                     }
 
-                                    if (owner.RotateStatus == 0) {
+                                    // if (owner.RotateStatus == 0) {
+                                        {
                                         owner.FieldTimer.sleep(owner.TetrominoInverseInterval).then(() => {
                                             owner.inverseSetTetromino();
                                         })
@@ -410,7 +412,8 @@ class Field {
 
                 this.ControllSwitch = 1;
 
-                if (this.TInversionSwitch != 1) {
+                // if (this.TInversionSwitch != 1) 
+                {
                     this.FieldTimer.sleep(this.TetrominoStartInterval).then(() => {
                         this.ControllSwitch = 0;
                         this.setTetromino(this.TMinoPool.shiftTetromino());
@@ -541,35 +544,35 @@ class Field {
             }
         })
 
-        // this.FieldTimer.sleep(this.LineDeleteInterval).then(() => {
-        //     for (var i = 1; i < this.FieldHeight + 1; i++) {
-        //         this.PrevDeleteChecker[i] = 0;
-        //         if (this.DeleteChecker[i] > 0) {
-        //             for (var j = 1; j < this.FieldWidth + 1; j++) {
-        //                 var baseCube = this.CurrentBufferPointer[i][j][1];
+        this.FieldTimer.sleep(this.LineDeleteInterval).then(() => {
+            for (var i = 1; i < this.FieldHeight + 1; i++) {
+                this.PrevDeleteChecker[i] = 0;
+                if (this.DeleteChecker[i] > 0) {
+                    for (var j = 1; j < this.FieldWidth + 1; j++) {
+                        var baseCube = this.CurrentBufferPointer[i][j][1];
 
-        //                 if (baseCube != null) {
-        //                     var index = baseCube.getIndex();
+                        if (baseCube != null) {
+                            var index = baseCube.getIndex();
 
-        //                     if (index[1] == i) {
-        //                         index[1] -= this.DeleteChecker[i];
+                            if (index[1] == i) {
+                                index[1] -= this.DeleteChecker[i];
 
-        //                         this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
-        //                         this.CurrentBufferPointer[i][j] = [0, null];
+                                this.CurrentBufferPointer[i - this.DeleteChecker[i]][j] = this.CurrentBufferPointer[i][j];
+                                this.CurrentBufferPointer[i][j] = [0, null];
 
-        //                         this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
-        //                         this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = [0, null];
+                                this.AnotherBufferPointer[i - this.DeleteChecker[i]][this.FieldWidth - j + 1] = this.AnotherBufferPointer[i][this.FieldWidth - j + 1];
+                                this.AnotherBufferPointer[i][this.FieldWidth - j + 1] = [0, null];
 
-        //                         baseCube.setIndex(index);
-        //                     }
-        //                 }
-        //             }
-        //         }
+                                baseCube.setIndex(index);
+                            }
+                        }
+                    }
+                }
 
-        //         this.PrevDeleteChecker[i - this.DeleteChecker[i]] = this.DeleteChecker[i];
-        //         this.DeleteChecker[i] = 0;
-        //     }
-        // })
+                this.PrevDeleteChecker[i - this.DeleteChecker[i]] = this.DeleteChecker[i];
+                this.DeleteChecker[i] = 0;
+            }
+        })
 
     }
 
