@@ -2,6 +2,40 @@
 <html>
 
 <head>
+
+    <meta meta name="viewport" content=  
+            "width=device-width, user-scalable=no" /> 
+
+    <style>
+        .button {
+            background-color: #888888;
+            border: none;
+            color: black;
+            padding: 5px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .turnButton {
+            position: absolute;
+            left: 20px;
+            bottom: 150px;
+        }
+
+        .directionButton {
+            position: absolute;
+            right: 20px;
+            bottom: 150px;
+        }
+
+        .inversionButton {
+            position: absolute;
+            left: 20px;
+            bottom: 100px;
+        }
+    </style>
     <title>
         Tenetris
     </title>
@@ -9,8 +43,11 @@
 </head>
 
 <body>
-    <div id="canvasDiv">
+    <div id="canvasDiv">    
     </div>
+    <div id="mobile">
+    </div>
+
     <div id="scriptDiv">
         <script src="./js/three.js/build/three.js"></script>
         <script src="./js/zlib.js/bin/inflate.min.js"></script>
@@ -32,6 +69,7 @@
         <script src="./js/Game.js"></script>
         <script src="./js/Main.js"></script>
     </div>
+
 </body>
 
 </html>
