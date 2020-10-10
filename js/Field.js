@@ -302,7 +302,6 @@ class Field {
                                 }
                                 else {
                                     owner.CurrentTetromino.initIndex();
-                                    owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
                                     owner.inverseLines();
 
                                     if (owner.SInversionSwitch != owner.PrevTetromino.getPlacedSpaceInversionType()) {
@@ -311,6 +310,7 @@ class Field {
 
                                     if (owner.RotateStatus == 0) {
                                         owner.FieldTimer.sleep(owner.TetrominoInverseInterval).then(() => {
+                                            owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
                                             owner.inverseSetTetromino();
                                         })
                                     }
