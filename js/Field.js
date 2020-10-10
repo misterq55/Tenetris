@@ -304,16 +304,17 @@ class Field {
                                     owner.CurrentTetromino.initIndex();
                                     owner.inverseLines();
 
-                                    if (owner.SInversionSwitch != owner.PrevTetromino.getPlacedSpaceInversionType()) {
-                                        owner.spaceInversion();
-                                    }
+                                    owner.FieldTimer.sleep(owner.TetrominoInverseInterval).then(() => {
+                                        if (owner.SInversionSwitch != owner.PrevTetromino.getPlacedSpaceInversionType()) {
+                                            owner.spaceInversion();
+                                        }
 
-                                    if (owner.RotateStatus == 0) {
-                                        owner.FieldTimer.sleep(owner.TetrominoInverseInterval).then(() => {
+                                        if (owner.RotateStatus == 0) {
                                             owner.TMinoPool.unshiftTetromino(owner.CurrentTetromino);
                                             owner.inverseSetTetromino();
-                                        })
-                                    }
+                                        }
+                                    })
+                                    
                                 }
                             }
                         }

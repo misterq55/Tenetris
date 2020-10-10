@@ -16,6 +16,96 @@ initWebGL();
 
 animate();
 
+var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+if (isMobile) 
+{
+	var mobile = document.getElementById("mobile");
+	var turnButton = document.createElement('div');
+	turnButton.id = 'turnButton';
+	turnButton.className = 'turnButton';
+	document.body.appendChild(turnButton);
+
+	var turnRight = document.createElement('button');
+	turnRight.className = 'button';
+	turnRight.innerHTML = 'TurnRight'
+	turnRight.onclick = onTurnRight;
+	turnButton.appendChild(turnRight);
+	
+	var turnLeft = document.createElement('button');
+	turnLeft.className = 'button';
+	turnLeft.innerHTML = 'TurnLeft'
+	turnLeft.onclick = onTurnLeft;
+	turnButton.appendChild(turnLeft);
+
+	var directionButton = document.createElement('div');
+	directionButton.id = 'directionButton';
+	directionButton.className = 'directionButton';
+	document.body.appendChild(directionButton);
+
+	var left = document.createElement('button');
+	left.className = 'button';
+	left.innerHTML = 'Left'
+	left.onclick = onLeft;
+	directionButton.appendChild(left);
+
+	var right = document.createElement('button');
+	right.className = 'button';
+	right.innerHTML = 'Right'
+	right.onclick = onRight;
+	directionButton.appendChild(right);
+	
+	var down = document.createElement('button');
+	down.className = 'button';
+	down.innerHTML = 'Down'
+	down.onclick = onDown;
+	directionButton.appendChild(down);
+
+	var inversionButton = document.createElement('div');
+	inversionButton.id = 'inversionButton';
+	inversionButton.className = 'InversionButton';
+	document.body.appendChild(inversionButton);
+
+	var spaceInversion = document.createElement('button');
+	spaceInversion.className = 'button';
+	spaceInversion.innerHTML = 'SpaceInversion'
+	spaceInversion.onclick = onSpaceInversion;
+	inversionButton.appendChild(spaceInversion);
+	
+	var timeInversion = document.createElement('button');
+	timeInversion.className = 'button';
+	timeInversion.innerHTML = 'TimeInversion'
+	timeInversion.onclick = onTimeInversion;
+	inversionButton.appendChild(timeInversion);
+}
+
+function onTurnLeft() {
+	mobileButton("TurnLeft");
+}
+
+function onTurnRight() {
+	mobileButton("TurnRight");
+}
+
+function onLeft() {
+	mobileButton("Left");
+}
+
+function onRight() {
+	mobileButton("Right");
+}
+
+function onDown() {
+	mobileButton("Down");
+}
+
+function onSpaceInversion() {
+	mobileButton("SpaceInversion");
+}
+
+function onTimeInversion() {
+	mobileButton("TimeInversion");
+}
+
 function loadTexture() {
 	let timeInterval = 30;
 	let p = Promise.resolve();
@@ -87,7 +177,11 @@ function calcScreenSize() {
 	Prev_screen_height = Screen_height;
 
 	Screen_width = window.innerWidth - 50;
-	Screen_height = window.innerHeight - 50;
+	Screen_height = window.innerHeight - 150;
+}
+
+function mobileButton(eventKey) {
+	TenettrisGame.setKeyCode(KeyManager.getInstance().getKey(eventKey));
 }
 
 window.addEventListener('resize', function () {
