@@ -45,7 +45,7 @@ class Tetromino {
         this.MoveAccumulate = [0, 0];
         this.PrevRotateIndex = [];
         
-        this.TetrominoType = 0;
+        this.TetrominoType = -1;
 
         this.CubeTexture = cubeTexture;
 
@@ -116,25 +116,6 @@ class Tetromino {
     
     getBaseCubes(idx) {
         return this.BaseCubes[idx];
-    }
-
-    setGuideTetromino(guideTetromino) {
-        this.GuideTeromino = guideTetromino;
-
-        if (this.GuideTeromino != null) {
-            this.applyGuideTetronimo();
-        }
-    }
-
-    applyGuideTetronimo() {
-        var tempIndex = new Array(4);
-        for (var i = 0; i < 4; i++) {
-            tempIndex[i] = [this.PreMoveIndex[i][0], this.PreMoveIndex[i][1] - 3];
-        }
-
-        if (this.GuideTeromino != null) {
-            this.GuideTeromino.setIndex(tempIndex);
-        }
     }
     
     initIndex() {
@@ -488,9 +469,20 @@ class LMino extends Tetromino {
 class GuideMino extends Tetromino {
     constructor(cubeTexture) {
         super(cubeTexture)
+
+        this.IndexArr = [];
+        this.PreMoveIndex = [];
         
         for (var i = 0; i < 4; i++) {
             this.BaseCubes[i] = new BaseCube(this.CubeTexture, [0, 0]);
+        }
+    }
+
+    applyGuideTetronimo(tetromino) {
+
+        for (var i = 0; i < 4; i++) {
+            this.IndexArr[i] = [tetromino.IndexArr[i][0], tetromino.IndexArr[i][1]];
+            this.PreMoveIndex[i] = [tetromino.PreMoveIndex[i][0], tetromino.PreMoveIndex[i][1]];
         }
     }
 }

@@ -43,17 +43,21 @@ class Field {
         this.CurrentBufferPointer = null;
         this.AnotherBufferPointer = null;
 
-        this.BaseCubes = null;
+        // this.BaseCubes = null;
+
+        Tetromino.StartIndex = [4, 22];
 
         this.CurrentTetromino = null;
         this.PrevTetromino = null;
-        this.GuideTetrmoino = null; // new GuideMino(TextureManager.getInstance().Dictionary["base"]);
+        // this.GuideTetrmoino = null;
         
-        // for (var i = 0; i < 4; i++) {
-        //     var baseCube = this.GuideTetrmoino.getBaseCubes(i);
+        this.GuideTetrmoino = new GuideMino(TextureManager.getInstance().Dictionary["base"]);
+        
+        for (var i = 0; i < 4; i++) {
+            var baseCube = this.GuideTetrmoino.getBaseCubes(i);
 
-        //     this.TetrominoMesh.add(baseCube.Mesh);
-        // }
+            this.TetrominoMesh.add(baseCube.Mesh);
+        }
 
         this.LineChecker = null;
         this.DeleteChecker = null;
@@ -73,8 +77,6 @@ class Field {
         this.ControllSwitch = 0;
 
         this.HeightBuffer = new Array(this.FieldWidth + 2);
-
-        Tetromino.StartIndex = [4, 22];
 
         this.TMinoPool = new TetrominoPool();
 
@@ -103,9 +105,7 @@ class Field {
         this.PrevDeleteChecker = new Array(this.FieldHeight + 2);
 
         // let texture = TextureManager.getInstance().Dictionary["grey"];
-
-        this.setTetromino(this.TMinoPool.shiftTetromino());
-
+        
         for (var i = 0; i < this.FieldHeight + 2; i++) {
             this.Buffer[i] = new Array(this.FieldWidth + 2);
             this.ReverseBuffer[i] = new Array(this.FieldWidth + 2);
@@ -136,6 +136,8 @@ class Field {
                 }
             }
         }
+
+        this.setTetromino(this.TMinoPool.shiftTetromino());
     }
 
     setPosition(pos) {
@@ -186,13 +188,34 @@ class Field {
         }
 
         if (this.PrevTetromino != null) {
-            this.PrevTetromino.setGuideTetromino(null);
+            if (this.GuideTetrmoino != null) {
+                this.GuideTetrmoino.applyGuideTetronimo(this.PrevTetromino);
+                this.placeGuideTetromino();
+            }
         }
 
         this.PrevTetromino = this.CurrentTetromino;
         this.CurrentTetromino = tetromino;
 
-        this.CurrentTetromino.setStartSpaceInversionType(this.SInversionSwitch);this.CurrentTetromino.setGuideTetromino(this.GuideTetrmoino);
+        this.CurrentTetromino.setStartSpaceInversionType(this.SInversionSwitch);
+        
+        if (this.GuideTetrmoino != null) {
+            this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
+            this.placeGuideTetromino();
+        }
+    }
+
+    placeGuideTetromino() {
+        while (true) {
+            this.GuideTetrmoino.move([0, -1]);
+            var res = this.checkTetromino(this.GuideTetrmoino, [0, -1]);
+
+            if (res == 2) {
+                this.GuideTetrmoino.retriveMove([0, -1]);
+                this.GuideTetrmoino.applyIndex();
+                break;
+            }
+        }
     }
 
     getTetromino() {
@@ -226,9 +249,17 @@ class Field {
             }
         }
 
-        this.CurrentTetromino.setGuideTetromino(null);
+        if (this.GuideTetrmoino != null) {
+            this.GuideTetrmoino.applyGuideTetronimo(null);
+            this.placeGuideTetromino();
+        }
+
         this.CurrentTetromino = this.PrevTetromino;
-        this.CurrentTetromino.setGuideTetromino(this.GuideTetrmoino);
+        if (this.GuideTetrmoino != null) {
+            this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
+            this.placeGuideTetromino();
+        }
+
         this.PrevTetromino = null;
     }
 
@@ -355,8 +386,8 @@ class Field {
         this.CenterMesh.rotation.set(0, this.YAngle, 0);
     }
 
-    checkTetromino(moveIndex) {
-        var preCheckIndex = this.CurrentTetromino.getPreMoveIndex();
+    checkTetromino(tetromino, moveIndex) {
+        var preCheckIndex = tetromino.getPreMoveIndex();
         for (var i = 0; i < 4; i++) {
             var x = preCheckIndex[i][0];
             var y = preCheckIndex[i][1];
@@ -384,10 +415,14 @@ class Field {
         if (this.CurrentTetromino == null || this.ControllSwitch == 1) {
             return;
         }
-
+        
         this.CurrentTetromino.move(index);
+        
+        if (index[0] != 0) {
+            this.GuideTetrmoino.move(index);
+        }
 
-        var state = this.checkTetromino(index);
+        var state = this.checkTetromino(this.CurrentTetromino, index);
         switch (state) {
             case 1:
                 this.CurrentTetromino.applyIndex();
@@ -395,10 +430,12 @@ class Field {
 
             case -1:
                 this.CurrentTetromino.retriveMove(index)
+                this.GuideTetrmoino.retriveMove(index)
                 break;
 
             case 2:
                 this.CurrentTetromino.retriveMove(index)
+                this.GuideTetrmoino.retriveMove(index)
                 this.lineDelete();
 
                 if (this.TMinoPool.getSize() <= 0) {
@@ -409,15 +446,16 @@ class Field {
 
                 this.ControllSwitch = 1;
 
-                // if (this.TInversionSwitch != 1) 
-                {
-                    this.FieldTimer.sleep(this.TetrominoStartInterval).then(() => {
-                        this.ControllSwitch = 0;
-                        this.setTetromino(this.TMinoPool.shiftTetromino());
-                    })
-                }
+                this.FieldTimer.sleep(this.TetrominoStartInterval).then(() => {
+                    this.ControllSwitch = 0;
+                    this.setTetromino(this.TMinoPool.shiftTetromino());
+                })
 
                 break;
+        }
+
+        if (this.GuideTetrmoino != null) {
+            this.placeGuideTetromino();
         }
     }
 
@@ -428,7 +466,11 @@ class Field {
 
         this.CurrentTetromino.rotate(dir)
 
-        var state = this.checkTetromino([0, 0]);
+        if (this.GuideTetrmoino != null) {
+            this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
+        }
+
+        var state = this.checkTetromino(this.CurrentTetromino, [0, 0]);
         switch (state) {
             case 1:
                 this.CurrentTetromino.applyIndex();
@@ -437,7 +479,15 @@ class Field {
             case -1:
             case 2:
                 this.CurrentTetromino.retriveRotate();
+                
+                if (this.GuideTetrmoino != null) {
+                    this.GuideTetrmoino.retriveRotate();
+                }
                 break;
+        }
+
+        if (this.GuideTetrmoino != null) {
+            this.placeGuideTetromino();
         }
     }
 
