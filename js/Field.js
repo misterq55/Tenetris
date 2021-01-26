@@ -51,13 +51,13 @@ class Field {
         this.PrevTetromino = null;
         // this.GuideTetrmoino = null;
         
-        this.GuideTetrmoino = new GuideMino(TextureManager.getInstance().Dictionary["base"]);
+        // this.GuideTetrmoino = new GuideMino(TextureManager.getInstance().Dictionary["base"]);
         
-        for (var i = 0; i < 4; i++) {
-            var baseCube = this.GuideTetrmoino.getBaseCubes(i);
+        // for (var i = 0; i < 4; i++) {
+        //     var baseCube = this.GuideTetrmoino.getBaseCubes(i);
 
-            this.TetrominoMesh.add(baseCube.Mesh);
-        }
+        //     this.TetrominoMesh.add(baseCube.Mesh);
+        // }
 
         this.LineChecker = null;
         this.DeleteChecker = null;
@@ -187,22 +187,22 @@ class Field {
             }
         }
 
-        if (this.PrevTetromino != null) {
-            if (this.GuideTetrmoino != null) {
-                this.GuideTetrmoino.applyGuideTetronimo(this.PrevTetromino);
-                this.placeGuideTetromino();
-            }
-        }
+        // if (this.PrevTetromino != null) {
+        //     if (this.GuideTetrmoino != null) {
+        //         this.GuideTetrmoino.applyGuideTetronimo(this.PrevTetromino);
+        //         this.placeGuideTetromino();
+        //     }
+        // }
 
         this.PrevTetromino = this.CurrentTetromino;
         this.CurrentTetromino = tetromino;
 
         this.CurrentTetromino.setStartSpaceInversionType(this.SInversionSwitch);
         
-        if (this.GuideTetrmoino != null) {
-            this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
-            this.placeGuideTetromino();
-        }
+        // if (this.GuideTetrmoino != null) {
+        //     this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
+        //     this.placeGuideTetromino();
+        // }
     }
 
     placeGuideTetromino() {
@@ -249,16 +249,16 @@ class Field {
             }
         }
 
-        if (this.GuideTetrmoino != null) {
-            this.GuideTetrmoino.applyGuideTetronimo(null);
-            this.placeGuideTetromino();
-        }
+        // if (this.GuideTetrmoino != null) {
+        //     this.GuideTetrmoino.applyGuideTetronimo(null);
+        //     this.placeGuideTetromino();
+        // }
 
         this.CurrentTetromino = this.PrevTetromino;
-        if (this.GuideTetrmoino != null) {
-            this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
-            this.placeGuideTetromino();
-        }
+        // if (this.GuideTetrmoino != null) {
+        //     this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
+        //     this.placeGuideTetromino();
+        // }
 
         this.PrevTetromino = null;
     }
@@ -418,9 +418,9 @@ class Field {
         
         this.CurrentTetromino.move(index);
         
-        if (index[0] != 0) {
-            this.GuideTetrmoino.move(index);
-        }
+        // if (index[0] != 0) {
+        //     this.GuideTetrmoino.move(index);
+        // }
 
         var state = this.checkTetromino(this.CurrentTetromino, index);
         switch (state) {
@@ -430,12 +430,12 @@ class Field {
 
             case -1:
                 this.CurrentTetromino.retriveMove(index)
-                this.GuideTetrmoino.retriveMove(index)
+                // this.GuideTetrmoino.retriveMove(index)
                 break;
 
             case 2:
                 this.CurrentTetromino.retriveMove(index)
-                this.GuideTetrmoino.retriveMove(index)
+                // this.GuideTetrmoino.retriveMove(index)
                 this.lineDelete();
 
                 if (this.TMinoPool.getSize() <= 0) {
@@ -454,9 +454,9 @@ class Field {
                 break;
         }
 
-        if (this.GuideTetrmoino != null) {
-            this.placeGuideTetromino();
-        }
+        // if (this.GuideTetrmoino != null) {
+        //     this.placeGuideTetromino();
+        // }
     }
 
     rotateStateCheck(dir) {
@@ -466,9 +466,9 @@ class Field {
 
         this.CurrentTetromino.rotate(dir)
 
-        if (this.GuideTetrmoino != null) {
-            this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
-        }
+        // if (this.GuideTetrmoino != null) {
+        //     this.GuideTetrmoino.applyGuideTetronimo(this.CurrentTetromino);
+        // }
 
         var state = this.checkTetromino(this.CurrentTetromino, [0, 0]);
         switch (state) {
@@ -480,15 +480,15 @@ class Field {
             case 2:
                 this.CurrentTetromino.retriveRotate();
                 
-                if (this.GuideTetrmoino != null) {
-                    this.GuideTetrmoino.retriveRotate();
-                }
+                // if (this.GuideTetrmoino != null) {
+                //     this.GuideTetrmoino.retriveRotate();
+                // }
                 break;
         }
 
-        if (this.GuideTetrmoino != null) {
-            this.placeGuideTetromino();
-        }
+        // if (this.GuideTetrmoino != null) {
+        //     this.placeGuideTetromino();
+        // }
     }
 
     lineDelete() {
